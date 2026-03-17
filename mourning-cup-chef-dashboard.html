@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mourning Cup of Coffee · Chef Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f5f0e8;--paper2:#ede8de;--paper3:#e0dbd0;
+  --ink:#1a1510;--ink2:#3a3020;--ink3:#6a6050;--ink4:#9a9080;
+  --rule:#c8c0b0;--rule2:#b0a890;
+  --deepgreen:#0d3322;--deepgreen-light:#1a5c30;--maroon:#60071D;
+  --red:#8b2020;--spine:#1e1c16;--amber:#c8800a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000e08;font-family:'IBM Plex Mono',monospace;min-height:100vh;padding-bottom:40px}
+
+/* ── HEADER ── */
+header{
+  background:linear-gradient(180deg,var(--deepgreen) 0%,#001a10 100%);
+  border-bottom:5px solid var(--maroon);padding:22px 40px;display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:200;box-shadow:0 4px 30px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.06) inset;
+  gap:16px;flex-wrap:wrap;overflow:hidden;position:relative;
+}
+header::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08) 0%,transparent 50%);pointer-events:none}
+.brand-name{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--deepgreen-light);letter-spacing:6px;text-transform:uppercase}
+.brand-sub{font-size:14px;color:#E4CDCF;letter-spacing:4px;text-transform:uppercase;margin-top:4px}
+.hright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.pill{font-size:14px;font-weight:700;padding:8px 16px;border-radius:2px;border:2px solid var(--maroon);color:#E4CDCF;background:var(--maroon);cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:all .2s;text-decoration:none;display:inline-block;position:relative;z-index:1}
+.pill:hover{background:#80091F;color:#fff}
+
+.lang-select{
+  background:transparent;border:2px solid var(--deepgreen-light);color:var(--deepgreen-light);
+  padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;
+  cursor:pointer;outline:none;text-transform:uppercase;letter-spacing:1px;
+}
+.lang-select option{background:#001a10;color:#E4CDCF;}
+
+/* ── NAV TABS ── */
+.nav-bar{display:flex;border-bottom:2px solid var(--maroon);border-top:3px solid var(--deepgreen-light);background:var(--paper2)}
+.nav-tab{padding:12px 24px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;cursor:pointer;border:none;background:transparent;color:var(--ink3);font-family:inherit;transition:all .15s;position:relative}
+.nav-tab:hover{color:var(--ink)}
+.nav-tab.active{color:var(--ink);background:var(--paper)}
+.nav-tab.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:3px;background:var(--deepgreen-light)}
+
+/* ── LAYERS ── */
+.layer{display:none}.layer.visible{display:block}
+.main{max-width:860px;margin:36px auto;padding:0 20px 60px}
+
+/* ── THE LEDGER PAPER ── */
+.ledger{background:var(--paper);border-radius:2px;box-shadow:2px 3px 0 var(--paper3),4px 6px 0 #ccc8b4,0 20px 60px rgba(0,0,0,.55);position:relative;overflow:hidden}
+.ledger::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,transparent 0px,transparent 31px,rgba(180,155,110,.13) 31px,rgba(180,155,110,.13) 32px);pointer-events:none;z-index:0}
+.ledger::before{content:'';position:absolute;left:68px;top:0;bottom:0;width:2px;background:rgba(96,7,29,.15);z-index:1}
+.holes{position:absolute;left:12px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-around;padding:80px 0;z-index:2;pointer-events:none}
+.hole{width:28px;height:28px;border-radius:50%;background:#000e08;box-shadow:inset 0 2px 4px rgba(0,0,0,.5)}
+.ledger-body{position:relative;z-index:3;padding:0 44px 48px 90px}
+
+/* ── LETTERHEAD ── */
+.letterhead{padding:36px 0 20px;border-bottom:3px double var(--rule2)}
+.lh-row{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.lh-brand{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:var(--ink);letter-spacing:4px;text-transform:uppercase;line-height:1}
+.lh-sub{font-size:14px;color:var(--ink3);letter-spacing:4px;text-transform:uppercase;margin-top:4px}
+.lh-right{text-align:right}
+.lh-date{font-size:15px;color:var(--ink2);font-weight:700;letter-spacing:1px}
+.lh-id{font-size:14px;color:var(--ink4);margin-top:3px}
+.lh-status{display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:4px 12px;border:1px solid var(--deepgreen-light)}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--deepgreen-light);animation:glow 1.5s infinite;flex-shrink:0}
+@keyframes glow{0%,100%{box-shadow:0 0 8px 4px var(--deepgreen-light),0 0 20px 8px rgba(26,92,48,.4)}50%{box-shadow:0 0 3px 2px var(--deepgreen-light)}}
+.stxt{font-size:14px;font-weight:700;color:var(--deepgreen-light);letter-spacing:3px;text-transform:uppercase}
+.greeting{font-family:'Special Elite',serif;font-size:28px;color:var(--ink);margin-top:14px;line-height:1.3}
+
+/* ── ROWS & SECTIONS ── */
+.section{padding:16px 0 0}
+.sec-rule{border:none;border-top:2px solid var(--ink);margin-bottom:0}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0 6px;border-bottom:1px solid var(--rule);flex-wrap:wrap;gap:6px}
+.sec-title{font-size:14px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--ink2)}
+.sec-badge{font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.ok{color:var(--deepgreen-light)}.warn{color:var(--amber)}.err{color:var(--red)}
+.row{display:flex;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(180,155,110,.18);gap:6px;min-height:30px}
+.row.spacer{min-height:14px;border-bottom:none}
+.row.tt{border-top:2px solid var(--ink);padding-top:8px;margin-top:2px}
+.row.tb{border-bottom:2px solid var(--ink);padding-bottom:8px}
+.lbl{font-size:16px;color:var(--ink2);white-space:nowrap;flex-shrink:0}
+.lbl.b{font-weight:700;color:var(--ink);font-size:17px}
+.lbl.i1{padding-left:14px}.lbl.i2{padding-left:28px;font-size:15px}
+.lbl.dim{color:var(--ink4);font-weight:400}
+.dots{flex:1;border-bottom:1px dotted rgba(180,155,110,.45);margin:0 6px 4px;min-width:16px}
+.val{font-size:16px;font-weight:700;color:var(--ink);text-align:right;white-space:nowrap;flex-shrink:0;min-width:88px}
+.val.big{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900}
+.val.green{color:var(--deepgreen-light)}.val.red{color:var(--red)}.val.amber{color:var(--amber)}.val.dim{color:var(--ink4);font-weight:400}
+.pct{font-size:14px;color:var(--ink4);min-width:48px;text-align:right;flex-shrink:0}
+.pct.ok{color:var(--deepgreen-light);font-weight:700}.pct.warn{color:var(--amber);font-weight:700}.pct.err{color:var(--red);font-weight:700}
+.si{font-size:15px;min-width:22px;text-align:right;flex-shrink:0}
+.note{font-size:14px;padding:4px 0 4px 12px;border-left:2px solid var(--rule);color:var(--ink3);line-height:1.6;margin:4px 0}
+.note.ok{border-left-color:var(--deepgreen-light);color:var(--deepgreen)}
+.note.warn{border-left-color:var(--amber);color:#7a5000}
+.note.err{border-left-color:var(--red);color:#6a1818}
+
+/* ── CHEF NOTE ── */
+.chef-note{margin-top:24px;padding-top:18px;border-top:3px double var(--rule2)}
+.cn-lbl{font-size:14px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--deepgreen-light);margin-bottom:8px}
+.cn-text{font-family:'Special Elite',serif;font-size:19px;color:var(--ink2);line-height:1.8}
+
+/* ── BACK LAYERS ── */
+.back-layer{display:none;max-width:860px;margin:36px auto;padding:0 20px 60px}
+.back-layer.visible{display:block}
+.back-paper{background:var(--paper);border-radius:2px;box-shadow:2px 3px 0 var(--paper3),4px 6px 0 #ccc8b4,0 20px 60px rgba(0,0,0,.55);position:relative;overflow:hidden;padding:36px 44px 48px 44px}
+.back-paper::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,transparent 0px,transparent 31px,rgba(180,155,110,.13) 31px,rgba(180,155,110,.13) 32px);pointer-events:none;z-index:0}
+.bp-body{position:relative;z-index:1}
+.bp-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--ink);letter-spacing:4px;text-transform:uppercase;margin-bottom:4px}
+.bp-sub{font-size:14px;color:var(--ink3);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px}
+
+/* ── ORDERS & PREP SHARED ── */
+.ai-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(13,51,34,.1);border:1px solid var(--deepgreen-light);color:var(--deepgreen-light);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--deepgreen-light);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.add-item-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px;background:var(--paper2);border:2px solid var(--deepgreen-light)}
+.ai-input{flex:1;padding:8px 12px;font-size:14px;font-family:inherit;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);outline:none;min-width:200px}
+.ai-input:focus{border-color:var(--deepgreen-light)}
+.ai-select{padding:8px 10px;font-size:14px;font-family:inherit;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);outline:none;cursor:pointer}
+.ai-btn{padding:8px 16px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border:2px solid var(--deepgreen-light);background:var(--deepgreen-light);color:#fff;cursor:pointer;font-family:inherit;transition:all .15s}
+.ai-btn:hover{background:var(--deepgreen)}
+.ai-btn.secondary{background:transparent;color:var(--deepgreen-light)}
+.ai-btn.secondary:hover{background:rgba(13,51,34,.1)}
+
+/* ── ORDERS BACK LAYER ── */
+.stock-cat{display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:8px;border-radius:2px}
+.red-cat{background:rgba(139,32,32,.07);border-left:5px solid var(--red)}
+.yellow-cat{background:rgba(200,128,10,.07);border-left:5px solid var(--amber)}
+.green-cat{background:rgba(26,92,48,.07);border-left:5px solid var(--deepgreen-light)}
+.cat-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.cat-label{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink2)}
+.cat-count{font-size:15px;font-weight:700;color:var(--ink4);margin-left:auto}
+.order-wrap{overflow-y:auto;margin-bottom:0}
+.order-wrap::-webkit-scrollbar{width:5px}
+.order-wrap::-webkit-scrollbar-thumb{background:var(--deepgreen-light);border-radius:3px}
+.otbl-header{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:0}
+.otbl-header th{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);text-align:left;padding:8px 10px;background:var(--paper2);border-bottom:3px solid var(--ink);border-top:1px solid var(--rule)}
+.otbl-header th:nth-child(n+2){text-align:right}
+.otbl{width:100%;border-collapse:collapse;font-size:17px}
+.otbl td{padding:9px 10px;border-bottom:1px solid rgba(180,155,110,.22);vertical-align:middle}
+.otbl td:nth-child(n+2){text-align:right}
+.otbl .iname{font-weight:700;color:var(--ink2);text-align:left!important;font-size:17px}
+.section-divider{border:none;border-top:2px solid var(--rule2);margin:0}
+.obtn-sm{font-size:14px;font-weight:700;padding:4px 10px;border:1px solid;cursor:pointer;transition:all .15s;text-transform:uppercase;letter-spacing:.5px;background:transparent}
+.obtn-sm.a{border-color:var(--deepgreen-light);color:var(--deepgreen-light)}.obtn-sm.a:hover{background:var(--deepgreen-light);color:#fff}
+.obtn-sm.s{border-color:var(--ink4);color:var(--ink4);margin-left:3px}.obtn-sm.s:hover{background:var(--ink4);color:#fff}
+.obtn-sm.done{background:var(--deepgreen-light);color:#fff;border-color:var(--deepgreen-light);cursor:default}
+.obtn-sm.edit{border-color:var(--amber);color:var(--amber)}.obtn-sm.edit:hover{background:var(--amber);color:#fff}
+.os-bar{display:flex;gap:20px;padding:12px 14px;border-left:4px solid var(--deepgreen-light);background:rgba(13,51,34,.04);margin-bottom:20px}
+.os-item .os-l{font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4)}
+.os-item .os-v{font-size:18px;font-weight:900;font-family:'Barlow Condensed',sans-serif;color:var(--ink)}
+
+/* ── PREP LIST SPECIFIC ── */
+.prep-cat{display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:8px;border-radius:2px;border-left:5px solid}
+.prep-must{background:rgba(139,32,32,.07);border-left-color:var(--red)}
+.prep-should{background:rgba(200,128,10,.07);border-left-color:var(--amber)}
+.prep-could{background:rgba(26,92,48,.07);border-left-color:var(--deepgreen-light)}
+.prep-done{background:rgba(106,96,80,.07);border-left-color:var(--ink4);opacity:.6}
+.prep-done .cat-label{text-decoration:line-through}
+
+/* ── PREP SPREADSHEET ── */
+.prep-sheet{width:100%;border-collapse:collapse;font-size:17px}
+.prep-sheet thead tr{background:var(--paper2)}
+.prep-sheet th{padding:9px 12px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);border-bottom:3px solid var(--ink);border-right:1px solid var(--rule)}
+.prep-sheet th:last-child{border-right:none}
+.prep-sheet td{padding:10px 12px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);vertical-align:middle}
+.prep-sheet td:last-child{border-right:none;text-align:right;white-space:nowrap}
+.prep-sheet td:nth-child(2),.prep-sheet td:nth-child(3),.prep-sheet td:nth-child(4){text-align:right;font-size:16px}
+.prep-sheet .sec-label-row td{background:var(--paper2);font-size:15px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:8px 12px;border-bottom:2px solid var(--ink);border-top:2px solid var(--ink);color:var(--ink2)}
+.prep-sheet .sec-label-row .dot-red{animation:glow-red 1.4s ease-in-out infinite;background:var(--red)}
+.prep-sheet .sec-label-row .dot-amber{animation:glow-amber 1.8s ease-in-out infinite;background:var(--amber)}
+.prep-sheet .sec-label-row .dot-green{animation:glow-green 2.4s ease-in-out infinite;background:var(--deepgreen-light)}
+.prep-sheet .need-val{font-weight:900;font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--ink)}
+.prep-sheet .done-row td{opacity:.5;text-decoration:line-through}
+
+/* ── SCHEDULE BACK LAYER ── */
+.add-emp-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;padding:10px 14px;background:var(--paper2);border:1px solid var(--rule)}
+.ae-input{padding:7px 10px;font-size:14px;font-family:inherit;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);outline:none;width:150px}
+.ae-input:focus{border-color:var(--deepgreen-light)}
+.ae-select{padding:7px 8px;font-size:14px;font-family:inherit;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);outline:none;cursor:pointer}
+.ae-rate{padding:7px 8px;font-size:14px;font-weight:700;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);outline:none;width:65px;text-align:center}
+.ae-btn{padding:7px 16px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border:2px solid var(--deepgreen-light);background:var(--deepgreen-light);color:#fff;cursor:pointer;font-family:inherit;transition:all .15s}
+.ae-btn:hover{background:var(--deepgreen)}
+.remove-emp{background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;font-weight:700;opacity:.3;transition:opacity .15s;padding:0 3px}
+.remove-emp:hover{opacity:1}
+.sched-wrap{overflow-x:auto;border:1px solid var(--rule)}
+.sg{width:100%;border-collapse:collapse;font-size:14px;min-width:900px}
+.sg th{padding:6px 5px;background:var(--paper2);border:1px solid var(--rule);font-weight:700;text-transform:uppercase;font-size:14px;letter-spacing:1px;text-align:center;position:sticky;top:0;z-index:2}
+.sg th:first-child{text-align:left;min-width:90px;position:sticky;left:0;z-index:3;padding-left:8px}
+.sg th:nth-child(2){text-align:left;min-width:120px}
+.sg td{border:1px solid var(--rule);padding:4px 5px;font-size:14px;text-align:center;height:32px;vertical-align:middle}
+.sg td:first-child{text-align:left;font-weight:700;color:var(--red);position:sticky;left:0;background:var(--paper2);z-index:1;padding-left:8px;font-size:14px}
+.sg td:nth-child(2){text-align:left;color:var(--ink2)}
+.sg .sc{cursor:pointer;transition:background .1s;position:relative;font-weight:700}
+.sg .s-on{background:rgba(26,92,48,.1);color:var(--deepgreen-light)}
+.sg .s-off{background:var(--paper);color:var(--rule)}.sg .s-off:hover{background:rgba(26,92,48,.04)}
+.sg .s-long{background:rgba(200,128,10,.1);color:var(--amber)}
+.shift-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:600;align-items:center;justify-content:center;padding:20px}
+.shift-modal-wrap.open{display:flex}
+.shift-modal{background:var(--paper);border-radius:2px;max-width:420px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.8);border-top:5px solid var(--deepgreen-light);position:relative}
+.shift-modal-body{padding:20px 24px}
+.shift-modal-title{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--ink);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.shift-modal-sub{font-size:12px;color:var(--ink4);letter-spacing:1px;margin-bottom:16px}
+.shift-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px}
+.shift-opt{background:var(--paper2);border:2px solid var(--rule);border-radius:2px;padding:8px 10px;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center;transition:all .15s;letter-spacing:1px}
+.shift-opt:hover{background:var(--deepgreen-light);border-color:var(--deepgreen-light);color:#fff}
+.shift-opt.s-section{background:transparent;border:none;color:var(--ink4);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:default;grid-column:1/-1;padding:6px 0 2px}
+.shift-opt.s-section:hover{background:transparent;color:var(--ink4)}
+.shift-off{width:100%;background:rgba(139,32,32,.08);border:2px solid rgba(139,32,32,.3);color:var(--red);padding:10px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;margin-bottom:10px;transition:all .2s}
+.shift-off:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.shift-custom-row{display:flex;gap:8px;align-items:center}
+.shift-custom-inp{flex:1;background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--ink);outline:none;transition:border-color .2s}
+.shift-custom-inp:focus{border-color:var(--deepgreen-light)}
+.shift-custom-btn{background:var(--deepgreen-light);border:none;color:#fff;padding:10px 18px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.shift-close{position:absolute;top:12px;right:12px;background:var(--spine);border:none;color:var(--deepgreen-light);font-size:22px;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.shift-close:hover{background:var(--deepgreen-light);color:#fff}
+.sched-totals{margin-top:10px;display:grid;grid-template-columns:repeat(4,1fr);border:2px solid var(--deepgreen-light);background:var(--paper2)}
+.st-cell{padding:12px 16px;border-right:1px solid var(--rule)}.st-cell:last-child{border-right:none}
+.st-cell .st-l{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--ink4);margin-bottom:3px}
+.st-cell .st-v{font-size:22px;font-weight:900;font-family:'Barlow Condensed',sans-serif}
+
+/* ── URGENCY GLOW ANIMATIONS ── */
+@keyframes glow-red{
+  0%,100%{box-shadow:0 0 6px 2px var(--red),0 0 18px 6px rgba(139,32,32,.35)}
+  50%{box-shadow:0 0 2px 1px var(--red)}
+}
+@keyframes glow-amber{
+  0%,100%{box-shadow:0 0 6px 2px var(--amber),0 0 18px 6px rgba(200,128,10,.35)}
+  50%{box-shadow:0 0 2px 1px var(--amber)}
+}
+@keyframes glow-green{
+  0%,100%{box-shadow:0 0 6px 2px var(--deepgreen-light),0 0 18px 6px rgba(26,92,48,.35)}
+  50%{box-shadow:0 0 2px 1px var(--deepgreen-light)}
+}
+@keyframes glow-burgundy{
+  0%,100%{
+    box-shadow:0 0 0 0 rgba(122,10,42,0),0 0 12px 6px rgba(122,10,42,.9),0 0 24px 10px rgba(122,10,42,.5);
+    transform:scale(1);
+  }
+  50%{
+    box-shadow:0 0 0 4px rgba(122,10,42,.3),0 0 6px 3px rgba(122,10,42,.4),0 0 12px 5px rgba(122,10,42,.2);
+    transform:scale(0.9);
+  }
+}
+.msg-thread{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;max-height:360px;overflow-y:auto;padding:4px 0}
+.msg-thread::-webkit-scrollbar{width:4px}
+.msg-thread::-webkit-scrollbar-thumb{background:var(--rule);border-radius:2px}
+.msg-bubble-wrap{display:flex;flex-direction:column;gap:2px}
+.msg-bubble-wrap.from-owner{align-items:flex-start}
+.msg-bubble-wrap.from-kitchen{align-items:flex-end}
+.msg-date-divider{text-align:center;font-size:11px;color:var(--ink4);letter-spacing:2px;text-transform:uppercase;margin:10px 0 6px;position:relative}
+.msg-date-divider::before,.msg-date-divider::after{content:'';position:absolute;top:50%;width:30%;height:1px;background:var(--rule)}
+.msg-date-divider::before{left:0}.msg-date-divider::after{right:0}
+.msg-bubble{max-width:72%;padding:10px 14px;border-radius:16px;font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:600;line-height:1.35;word-break:break-word}
+.msg-bubble.owner{background:#0d3322;color:#fff;border-bottom-left-radius:4px}
+.msg-bubble.kitchen{background:var(--paper2);border:1px solid var(--rule);border-bottom-right-radius:4px;color:var(--ink)}
+.msg-meta{font-size:11px;color:var(--ink4);letter-spacing:1px;padding:0 4px}
+.msg-meta.kitchen{text-align:right}
+.msg-compose-k{display:flex;gap:0;border:2px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--paper2)}
+.msg-input-k{flex:1;background:transparent;border:none;padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:19px;color:var(--ink);outline:none}
+.msg-input-k::placeholder{color:var(--ink4);font-style:italic}
+.msg-send-k{background:#0d3322;border:none;color:#fff;padding:12px 20px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.msg-send-k:hover{background:var(--deepgreen-light)}
+.msg-empty{text-align:center;padding:40px 20px;font-size:12px;color:var(--ink4);letter-spacing:2px;text-transform:uppercase}
+@keyframes pulse-bg-red{
+  0%,100%{background:rgba(139,32,32,.10)}
+  50%{background:rgba(139,32,32,.22)}
+}
+@keyframes pulse-bg-amber{
+  0%,100%{background:rgba(200,128,10,.08)}
+  50%{background:rgba(200,128,10,.20)}
+}
+@keyframes action-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(200,128,10,.6)}
+  50%{box-shadow:0 0 0 6px rgba(200,128,10,.0)}
+}
+
+/* Pulsing dots only — bars stay calm */
+.red-cat .cat-dot{animation:glow-red 1.4s ease-in-out infinite}
+.yellow-cat .cat-dot{animation:glow-amber 1.8s ease-in-out infinite}
+.green-cat .cat-dot{animation:glow-green 2.4s ease-in-out infinite}
+.prep-must .cat-dot{animation:glow-red 1.4s ease-in-out infinite}
+.prep-should .cat-dot{animation:glow-amber 1.8s ease-in-out infinite}
+.prep-could .cat-dot{animation:glow-green 2.4s ease-in-out infinite}
+
+/* ⚡ One Action Today row glow */
+.row.tt .val.warn{
+  animation:action-pulse 1.6s ease-in-out infinite;
+  border-radius:2px;
+}
+
+/* ✓ Approve/Complete — solid amber, no glow */
+.obtn-sm.a{
+  background:var(--amber);
+  color:#fff;
+  border-color:var(--amber);
+}
+.obtn-sm.a:hover{background:#a06008}
+
+/* ✕ Remove — solid red, no glow, destructive */
+.obtn-sm.s{
+  background:rgba(139,32,32,.12);
+  color:var(--red);
+  border-color:var(--red);
+}
+.obtn-sm.s:hover{background:var(--red);color:#fff}
+
+/* ✎ Edit — neutral ink, no glow */
+.obtn-sm.edit{
+  background:rgba(106,96,80,.10);
+  color:var(--ink3);
+  border-color:var(--ink3);
+}
+.obtn-sm.edit:hover{background:var(--ink3);color:#fff}
+
+/* Schedule — s-off cells are neutral, no urgency */
+.sg .s-off{background:var(--paper);color:var(--rule)}
+.sg .s-off:hover{background:rgba(26,92,48,.04)}
+
+/* Inline glowing status dots */
+.gdot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;margin:0 2px}
+.gdot.dot-red{background:var(--red);animation:glow-red 1.4s ease-in-out infinite}
+.gdot.dot-amber{background:var(--amber);animation:glow-amber 1.8s ease-in-out infinite}
+.gdot.dot-green{background:var(--deepgreen-light);animation:glow-green 2.4s ease-in-out infinite}
+
+/* Section titles — deep maroon */
+.sec-title{font-size:14px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--maroon)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--spine);color:var(--paper);padding:12px 24px;font-size:14px;font-weight:700;letter-spacing:2px;border-left:5px solid var(--deepgreen-light);z-index:9999;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.s{border-left-color:var(--deepgreen-light)}
+
+@media print{
+  body{background:white!important;padding-bottom:0}
+  header,.nav-bar,.toast,.back-layer{display:none!important}
+  .main{margin:0!important;padding:0!important;max-width:100%!important}
+  .ledger{box-shadow:none!important}.holes{display:none!important}.ledger::before{display:none!important}
+  @page{margin:.5in;size:letter}
+}
+@media(max-width:600px){
+  .ledger-body{padding:0 16px 32px 52px}
+  header{padding-left:16px;padding-right:16px}
+  .back-paper{padding:24px 16px}
+  .add-item-bar{flex-direction:column;align-items:stretch}
+  .ai-input{width:100%}
+}
+</style>
+</head>
+<body id="appBody">
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="brand-name">Mourning Cup of Coffee</div>
+    <div class="brand-sub" data-i18n="tagline">Chef Dashboard · Back of House</div>
+  </div>
+  <div class="hright">
+    <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
+      <option value="en">🇺🇸 EN</option>
+      <option value="es">🇪🇸 ES</option>
+    </select>
+    <button class="pill" onclick="window.print()">🖨️ <span data-i18n="print">Print</span></button>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<div class="nav-bar">
+  <button class="nav-tab active" onclick="showLayer('dashboard',event)" data-i18n="nav_dashboard">Dashboard</button>
+  <button class="nav-tab" onclick="showLayer('orders',event)" data-i18n="nav_orders">Orders</button>
+  <button class="nav-tab" onclick="showLayer('prep',event)" data-i18n="nav_prep">Prep List</button>
+  <button class="nav-tab" onclick="showLayer('schedule',event)" data-i18n="nav_schedule">Schedule</button>
+  <button class="nav-tab" onclick="showLayer('messages',event)" style="display:flex;align-items:center;gap:4px">
+    Messages <span id="chefMsgDot" style="display:none;width:11px;height:11px;border-radius:50%;background:#7a0a2a;animation:glow-burgundy 1.6s ease-in-out infinite;flex-shrink:0"></span>
+  </button>
+</div>
+
+<!-- DASHBOARD LAYER -->
+<div class="main layer visible" id="layer-dashboard">
+<div class="ledger">
+  <div class="holes"><div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div></div>
+  <div class="ledger-body">
+    <div class="letterhead">
+      <div class="lh-row">
+        <div><div class="lh-brand">Mourning Cup of Coffee</div><div class="lh-sub">"Built by a Chef for a Chef"</div></div>
+        <div class="lh-right">
+          <div class="lh-date" id="rDate">—</div>
+          <div class="lh-id" id="rTemp" style="margin-top:3px">—</div>
+        </div>
+      </div>
+      <div class="greeting" id="rGreeting" data-i18n="good_morning">Good Morning Chef —</div>
+    </div>
+
+    <!-- AT-A-GLANCE -->
+    <div class="section">
+      <hr class="sec-rule">
+      <div class="sec-head"><span class="sec-title">At-a-Glance · Back of House</span><span class="sec-badge ok">Kitchen Status</span></div>
+      <div class="row"><span class="lbl b">Food Sales Only</span><span class="dots"></span><span class="val green">$3,380 net</span><span class="pct ok"><span class="gdot dot-green"></span> 40% of Total</span></div>
+      <div class="row"><span class="lbl b">BOH Prime Cost</span><span class="dots"></span><span class="val green">58.2%</span><span class="pct ok"><span class="gdot dot-green"></span> Target 60%</span></div>
+      <div class="row"><span class="lbl b">Kitchen Break-Even</span><span class="dots"></span><span class="val green">Hit 8:15 PM</span><span class="pct ok"><span class="gdot dot-green"></span></span></div>
+      <div class="row"><span class="lbl b">BOH Profit Contribution</span><span class="dots"></span><span class="val green">$1,410</span><span class="pct ok">41.7%</span></div>
+      <div class="row tt"><span class="lbl b">⚡ One Action Today</span><span class="dots"></span><span class="val warn" style="font-size:14px;text-align:right;min-width:200px;">Portion chicken 6oz not 7oz → Save $180/wk</span></div>
+    </div>
+
+    <!-- FOOD COGS -->
+    <div class="section">
+      <hr class="sec-rule">
+      <div class="sec-head"><span class="sec-title">Food Cost of Goods Sold</span><span class="sec-badge ok">30.0% <span class="gdot dot-green"></span></span></div>
+      <div class="row"><span class="lbl i1">├── Proteins</span><span class="dots"></span><span class="val">$608.00</span><span class="pct">18.0%</span></div>
+      <div class="row"><span class="lbl i1">├── Produce</span><span class="dots"></span><span class="val">$203.00</span><span class="pct">6.0%</span></div>
+      <div class="row"><span class="lbl i1">├── Dry Goods</span><span class="dots"></span><span class="val">$135.00</span><span class="pct">4.0%</span></div>
+      <div class="row"><span class="lbl i1">└── Dairy</span><span class="dots"></span><span class="val">$68.00</span><span class="pct">2.0%</span></div>
+      <div class="row tt tb"><span class="lbl b">Total Food COGS</span><span class="dots"></span><span class="val big green">$1,014.00</span><span class="pct ok">30.0%</span></div>
+      <div class="note ok">Chicken yield improved 2% this week — keep pressure on vendor</div>
+    </div>
+
+    <!-- BOH LABOR -->
+    <div class="section">
+      <hr class="sec-rule">
+      <div class="sec-head"><span class="sec-title">BOH Labor · Kitchen Staff Only</span><span class="sec-badge ok">28.2% <span class="gdot dot-green"></span></span></div>
+      <div class="row"><span class="lbl i1">├── Line Cooks</span><span class="dots"></span><span class="val">$960.00</span></div>
+      <div class="row"><span class="lbl i1">├── Sous Chef</span><span class="dots"></span><span class="val">$520.00</span></div>
+      <div class="row"><span class="lbl i1">├── Prep Cooks</span><span class="dots"></span><span class="val">$380.00</span></div>
+      <div class="row"><span class="lbl i1">├── Dishwashers</span><span class="dots"></span><span class="val">$240.00</span></div>
+      <div class="row"><span class="lbl i1">└── Pastry Chef</span><span class="dots"></span><span class="val">$0.00</span><span class="si">OFF</span></div>
+      <div class="row tt tb"><span class="lbl b">Total BOH Labor</span><span class="dots"></span><span class="val big">$2,100.00</span><span class="pct ok">28.2%</span></div>
+      <div class="note warn">Friday prep heavy — consider adding AM prep cook 6a-2p</div>
+    </div>
+
+    <!-- BOH PRIME COST -->
+    <div class="section">
+      <hr class="sec-rule">
+      <div class="sec-head"><span class="sec-title">BOH Prime Cost</span><span class="sec-badge ok">58.2% — $220 Under Target <span class="gdot dot-green"></span></span></div>
+      <div class="row"><span class="lbl">Food COGS</span><span class="dots"></span><span class="val">$1,014.00</span><span class="pct">30.0%</span></div>
+      <div class="row"><span class="lbl">BOH Labor</span><span class="dots"></span><span class="val">$2,100.00</span><span class="pct">28.2%</span></div>
+      <div class="row tt tb"><span class="lbl b">BOH Prime Cost</span><span class="dots"></span><span class="val big green">$3,114.00</span><span class="pct ok">58.2%</span></div>
+      <div class="note ok">7-day trend: 59.1% → 58.8% → 58.2% — improving ↓</div>
+    </div>
+
+    <!-- BOH INVENTORY -->
+    <div class="section">
+      <hr class="sec-rule">
+      <div class="sec-head"><span class="sec-title">BOH Inventory · Kitchen Only</span><span class="sec-badge ok">0.9% Gap <span class="gdot dot-green"></span></span></div>
+      <div class="row"><span class="lbl">Opening Inventory</span><span class="dots"></span><span class="val">$8,400.00</span></div>
+      <div class="row"><span class="lbl i1">+ Received</span><span class="dots"></span><span class="val green">+$1,210.00</span></div>
+      <div class="row"><span class="lbl i1">− Food Sold (Theoretical)</span><span class="dots"></span><span class="val red">($1,014.00)</span></div>
+      <div class="row tt"><span class="lbl b">Should Have</span><span class="dots"></span><span class="val" style="color:var(--deepgreen-light)">$8,596.00</span></div>
+      <div class="row"><span class="lbl b">Actually Have (Count)</span><span class="dots"></span><span class="val">$8,520.00</span></div>
+      <div class="row tt tb"><span class="lbl b">The Gap / Variance</span><span class="dots"></span><span class="val green">($76.00)</span><span class="pct ok">0.9%</span></div>
+      <div class="note ok">Waste tracking: 0.9% within target (under 2%)</div>
+    </div>
+
+    <!-- WASTE & PORTION CONTROL -->
+    <div class="section">
+      <hr class="sec-rule">
+      <div class="sec-head"><span class="sec-title">Waste & Portion Control</span><span class="sec-badge ok">1.2% <span class="gdot dot-green"></span></span></div>
+      <div class="row"><span class="lbl i1">├── Spoilage</span><span class="dots"></span><span class="val">$24.00</span><span class="pct">0.7%</span></div>
+      <div class="row"><span class="lbl i1">├── Over-portioning</span><span class="dots"></span><span class="val">$12.00</span><span class="pct">0.4%</span></div>
+      <div class="row"><span class="lbl i1">└── Misc/Errors</span><span class="dots"></span><span class="val">$4.00</span><span class="pct">0.1%</span></div>
+      <div class="row tt tb"><span class="lbl b">Total Waste</span><span class="dots"></span><span class="val big green">$40.00</span><span class="pct ok">1.2%</span></div>
+    </div>
+
+    <!-- CHEF'S NOTE -->
+    <div class="chef-note">
+      <div class="cn-lbl" data-i18n="the_note">⭐ Chef's Note</div>
+      <div class="cn-text" data-i18n="chef_note_text">Yesterday's protein butchery was excellent — 94% yield on salmon. Prep team is ahead of schedule. Watch the chicken portions today — last night's comps were high on overcooked birds. Heat wave means push the cold apps and gazpacho. You're running a tight kitchen. Enjoy your mise. ☕</div>
+    </div>
+
+    <!-- MESSAGES INDICATOR — on the dashboard face -->
+    <div id="chefMsgFacePanel" onclick="showLayer('messages',null)" style="
+      display:flex;align-items:center;gap:12px;
+      margin-top:12px;padding:14px 18px;
+      background:rgba(122,10,42,.06);
+      border:2px solid rgba(122,10,42,.25);
+      border-radius:2px;cursor:pointer;transition:all .2s;
+      overflow:visible"
+      onmouseover="this.style.background='rgba(122,10,42,.12)'"
+      onmouseout="this.style.background='rgba(122,10,42,.06)'">
+      <span id="chefMsgFaceDot" style="
+        width:14px;height:14px;border-radius:50%;
+        background:#7a0a2a;flex-shrink:0;
+        animation:glow-burgundy 1.6s ease-in-out infinite;
+        display:inline-block"></span>
+      <div style="flex:1">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#7a0a2a" id="chefMsgFaceLabel">Messages from Owner</div>
+        <div style="font-size:12px;color:var(--ink4);margin-top:1px" id="chefMsgFacePreview">Tap to read or reply</div>
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#7a0a2a;opacity:.5">›</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ORDERS LAYER -->
+<div class="back-layer" id="layer-orders">
+<div class="back-paper"><div class="bp-body">
+  <div class="bp-title">Suggested Orders · BOH</div>
+
+  <div class="add-item-bar">
+    <input type="text" class="ai-input" id="orderItemInput" placeholder="Item name...">
+    <input type="text" class="ai-input" id="orderQtyInput" placeholder="Order qty (e.g., 25 lbs)" style="width:160px">
+    <input type="text" class="ai-input" id="orderParInput" placeholder="Par (e.g., 30 lbs)" style="width:140px">
+    <input type="text" class="ai-input" id="orderHandInput" placeholder="On Hand" style="width:120px">
+    <select class="ai-select" id="orderPrioritySelect">
+      <option value="Low">Low Stock</option>
+      <option value="Watch">Watch</option>
+      <option value="Par">Par Level</option>
+    </select>
+    <input type="number" class="ai-input" id="orderCostInput" placeholder="$Cost" style="width:80px">
+    <button class="ai-btn" onclick="addOrderItem()">+ Add</button>
+  </div>
+
+  <div class="os-bar">
+    <div class="os-item"><div class="os-l">Total</div><div class="os-v" id="osTotalItems">—</div></div>
+    <div class="os-item"><div class="os-l">Low Stock</div><div class="os-v" style="color:var(--red)" id="osLow">—</div></div>
+    <div class="os-item"><div class="os-l">Watch</div><div class="os-v" style="color:var(--amber)" id="osWatch">—</div></div>
+    <div class="os-item"><div class="os-l">Est. Cost</div><div class="os-v" id="osCost">—</div></div>
+  </div>
+
+  <div style="border:2px solid var(--ink);overflow:hidden">
+    <table class="prep-sheet">
+      <thead>
+        <tr>
+          <th style="text-align:left;width:35%">Item</th>
+          <th>Par</th>
+          <th>On Hand</th>
+          <th>Order Qty</th>
+          <th>Cost</th>
+          <th style="text-align:right">Action</th>
+        </tr>
+      </thead>
+      <tbody id="orderRed"></tbody>
+      <tbody id="orderYellow"></tbody>
+      <tbody id="orderGreen"></tbody>
+    </table>
+  </div>
+  <span id="orderCount" style="display:none"></span>
+  <span id="redCount" style="display:none"></span>
+  <span id="yellowCount" style="display:none"></span>
+  <span id="greenCount" style="display:none"></span>
+</div></div>
+</div>
+
+<!-- PREP LIST LAYER -->
+<div class="back-layer" id="layer-prep">
+<div class="back-paper"><div class="bp-body">
+  <div class="bp-title">Prep List · BOH</div>
+
+  <div class="add-item-bar">
+    <input type="text" class="ai-input" id="prepItemInput" placeholder="Prep item...">
+    <input type="text" class="ai-input" id="prepQtyInput" placeholder="Amount (e.g., 5 lbs)" style="width:140px">
+    <select class="ai-select" id="prepPrioritySelect">
+      <option value="must">Must Do</option>
+      <option value="should">Should Do</option>
+      <option value="could">Could Do</option>
+    </select>
+    <button class="ai-btn" onclick="addPrepItem()">+ Add</button>
+  </div>
+
+  <div class="bp-sub" id="prepCount">—</div>
+
+  <div style="border:2px solid var(--ink);overflow:hidden">
+    <table class="prep-sheet" id="prepSheet">
+      <thead>
+        <tr>
+          <th style="text-align:left;width:45%">Task</th>
+          <th>Par</th>
+          <th>On Hand</th>
+          <th>Need</th>
+          <th style="text-align:right">Action</th>
+        </tr>
+      </thead>
+      <tbody id="prepMust"></tbody>
+      <tbody id="prepShould"></tbody>
+      <tbody id="prepCould"></tbody>
+      <tbody id="prepDone"></tbody>
+    </table>
+  </div>
+  <div id="doneHeader" style="display:none"></div>
+  <div id="doneWrap" style="display:none"></div>
+</div></div>
+</div>
+
+<!-- SCHEDULE LAYER -->
+<div class="back-layer" id="layer-schedule">
+<div class="back-paper"><div class="bp-body">
+  <div class="bp-title" data-i18n="weekly_schedule">BOH Schedule · Kitchen Staff Only</div>
+  <div class="bp-sub" id="schedWeek">—</div>
+  <div style="font-size:14px;color:var(--ink3);margin-bottom:10px" data-i18n="click_shift">Click any shift to change it</div>
+  <div class="add-emp-bar">
+    <input type="text" class="ae-input" id="aeNameInput" placeholder="Name" maxlength="40" data-i18n-placeholder="name_placeholder">
+    <select class="ae-select" id="aePosSelect">
+      <option value="Chef" data-i18n="chef">Chef</option>
+      <option value="Sous Chef" data-i18n="sous_chef">Sous Chef</option>
+      <option value="Pastry Chef" data-i18n="pastry_chef">Pastry Chef</option>
+      <option value="Line Cook" selected data-i18n="line_cook">Line Cook</option>
+      <option value="Prep Cook" data-i18n="prep_cook">Prep Cook</option>
+      <option value="Dishwasher" data-i18n="dishwasher">Dishwasher</option>
+    </select>
+    <input type="number" class="ae-rate" id="aeRateInput" placeholder="$/hr" min="10" max="80" value="20">
+    <button class="ae-btn" onclick="addEmployee()" data-i18n="add">+ Add</button>
+  </div>
+  <div style="font-size:14px;color:var(--ink4);margin-bottom:12px" id="staffCount">—</div>
+  <div class="sched-wrap"><table class="sg" id="schedGrid"></table></div>
+  <div class="sched-totals">
+    <div class="st-cell"><div class="st-l" data-i18n="hours">Hours</div><div class="st-v" id="stHrs">0</div></div>
+    <div class="st-cell"><div class="st-l" data-i18n="wages">Wages</div><div class="st-v" style="color:var(--ink)" id="stWages">$0</div></div>
+    <div class="st-cell"><div class="st-l" data-i18n="tax_35">Tax 35%</div><div class="st-v" style="color:var(--amber)" id="stTax">$0</div></div>
+    <div class="st-cell"><div class="st-l" data-i18n="total">Total</div><div class="st-v" style="color:var(--red)" id="stTotal">$0</div></div>
+  </div>
+
+  <!-- GO LIVE BUTTON -->
+  <div style="margin-top:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <button id="goLiveBtn" onclick="goLive()" style="
+      background:var(--deepgreen);
+      border:2px solid var(--deepgreen-light);
+      color:#fff;
+      padding:14px 32px;
+      border-radius:2px;
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:22px;
+      font-weight:700;
+      letter-spacing:4px;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:all .2s;
+      display:flex;
+      align-items:center;
+      gap:12px;">
+      <span style="
+        width:12px;height:12px;border-radius:50%;
+        background:var(--red);flex-shrink:0;
+        animation:glow-red 1.4s ease-in-out infinite;
+        display:inline-block"></span>
+      LIVE — Push to Cook Station &amp; Owner
+    </button>
+    <span id="liveStatus" style="font-size:13px;color:var(--ink4);letter-spacing:1px"></span>
+  </div>
+</div></div>
+</div>
+
+<!-- MESSAGES LAYER — Chef View -->
+<div class="back-layer" id="layer-messages">
+<div class="back-paper"><div class="bp-body">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+    <div class="bp-title" style="margin-bottom:0">Messages</div>
+    <span id="chefUnreadCount" style="font-size:12px;color:#7a0a2a;font-weight:700;letter-spacing:1px"></span>
+  </div>
+
+  <!-- Chef sees: Broadcast + Manager↔Chef only. NOT Owner↔Manager -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap">
+    <button id="chBtn0" onclick="switchChefChannel(0)" style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px;padding:8px 16px;border-radius:2px;border:2px solid var(--deepgreen-light);background:var(--deepgreen-light);color:#fff;cursor:pointer;transition:all .2s;text-transform:uppercase">📢 Broadcast</button>
+    <button id="chBtn1" onclick="switchChefChannel(1)" style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px;padding:8px 16px;border-radius:2px;border:2px solid var(--rule);background:transparent;color:var(--ink3);cursor:pointer;transition:all .2s;text-transform:uppercase">👔 Manager ↔ Chef</button>
+  </div>
+
+  <div style="font-size:12px;color:var(--ink4);letter-spacing:1px;margin-bottom:14px" id="chefChDesc">Team-wide messages from Owner</div>
+
+  <div class="msg-thread" id="chefMsgThread">
+    <div class="msg-empty">No messages yet</div>
+  </div>
+
+  <div style="margin-bottom:4px">
+    <div class="msg-compose-k">
+      <input class="msg-input-k" id="chefMsgInput" type="text" placeholder="Reply or message Manager…" maxlength="200" onkeydown="if(event.key==='Enter')sendKitchenMsg('chef')">
+      <button class="msg-send-k" onclick="sendKitchenMsg('chef')">Send</button>
+    </div>
+  </div>
+
+</div></div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// TRANSLATIONS (EN/ES)
+// ═══════════════════════════════════════════════════════
+const i18n = {
+  en: {
+    tagline:"Chef Dashboard · Back of House",print:"Print",nav_dashboard:"Dashboard",nav_orders:"Orders",nav_prep:"Prep List",nav_schedule:"Schedule",built_by:"Chef Dashboard · BOH Only",restaurant_id:"Kitchen ID",operation_green:"Kitchen Operation Green",good_morning:"Good Morning Chef —",at_a_glance:"At-a-Glance · Back of House",above_fold:"Kitchen Status",sales:"Food Sales Only",in_range:"✅ 40% of Total",prime_cost:"BOH Prime Cost",break_even:"Kitchen Break-Even",hit_time:"Hit 8:15 PM",profit:"BOH Profit Contribution",one_action:"⚡ One Action Today",action_cut:"Portion chicken 6oz not 7oz → Save $180/wk",the_note:"⭐ Chef's Note",chef_note_text:"Yesterday's protein butchery was excellent — 94% yield on salmon. Prep team is ahead of schedule. Watch the chicken portions today — last night's comps were high on overcooked birds. Heat wave means push the cold apps and gazpacho. You're running a tight kitchen. Enjoy your mise. ☕",suggested_orders:"Suggested Orders · BOH Only",ai_synced:"AI Synced • Last Update: 6:00 AM",item_name:"Item name...",qty_placeholder:"Qty (e.g., 2 cases)",priority_low:"Low Stock",priority_watch:"Watch",priority_par:"Par Level",add:"+ Add",sync_ai:"🤖 Sync AI",total_items:"Total",low_stock:"Low Stock",watch:"Watch",est_cost:"Est. Cost",order_now:"Low Stock — Order Now",getting_low:"Watch — Getting Low",par_level:"Par Level — Routine",item:"Item",qty:"Qty",cost:"Cost",action:"Action",prep_list:"Prep List · Auto-Updated EOD",ai_synced_prep:"AI Synced • Based on tomorrow's forecast + current stock",prep_item:"Prep item...",amount_placeholder:"Amount (e.g., 5 lbs)",priority_must:"Must Do",priority_should:"Should Do",priority_could:"Could Do",assign_to:"Assign to...",sync_ai_prep:"🤖 Sync AI",must_do:"MUST DO — Critical",should_do:"SHOULD DO — Important",could_do:"COULD DO — If Time",completed:"COMPLETED",prep_task:"Task",amount:"Amount",assigned:"Assigned",status:"Status",completed_at:"Completed",weekly_schedule:"BOH Schedule · Kitchen Staff Only",click_shift:"Click any shift to change it",name_placeholder:"Name",chef:"Chef",sous_chef:"Sous Chef",pastry_chef:"Pastry Chef",line_cook:"Line Cook",prep_cook:"Prep Cook",dishwasher:"Dishwasher",hours:"Hours",wages:"Wages",tax_35:"Tax 35%",total:"Total"
+  },
+  es: {
+    tagline:"Panel del Chef · Cocina",print:"Imprimir",nav_dashboard:"Panel",nav_orders:"Pedidos",nav_prep:"Lista Prep",nav_schedule:"Horario",built_by:"Panel del Chef · Solo BOH",restaurant_id:"ID Cocina",operation_green:"Operación Cocina Verde",good_morning:"Buenos Días Chef —",at_a_glance:"Vistazo Rápido · Cocina",above_fold:"Estado Cocina",sales:"Ventas Solo Comida",in_range:"✅ 40% del Total",prime_cost:"Costo Principal BOH",break_even:"Punto Equilibrio Cocina",hit_time:"Logrado 8:15 PM",profit:"Contribución Ganancia BOH",one_action:"⚡ Acción de Hoy",action_cut:"Porción pollo 6oz no 7oz → Ahorra $180/sem",the_note:"⭐ Nota del Chef",chef_note_text:"La carnicería de proteínas de ayer fue excelente — 94% rendimiento en salmón. El equipo de prep está adelantado. Cuida las porciones de pollo hoy — anoche hubo muchos compt por pollo cocinado de más. Ola de calor significa impulsar entradas frías y gazpacho. Estás manejando una cocina ajustada. Disfruta tu mise. ☕",suggested_orders:"Pedidos Sugeridos · Solo BOH",ai_synced:"Sincronizado IA • Última Actualización: 6:00 AM",item_name:"Nombre artículo...",qty_placeholder:"Cant (ej., 2 cajas)",priority_low:"Stock Bajo",priority_watch:"Observar",priority_par:"Nivel Par",add:"+ Agregar",sync_ai:"🤖 Sincronizar IA",total_items:"Total",low_stock:"Stock Bajo",watch:"Observar",est_cost:"Costo Est.",order_now:"Stock Bajo — Ordenar Ahora",getting_low:"Observar — Agotándose",par_level:"Nivel Par — Rutina",item:"Artículo",qty:"Cant",cost:"Costo",action:"Acción",prep_list:"Lista de Prep · Auto-Actualizado Cierre",ai_synced_prep:"Sincronizado IA • Basado en pronóstico mañana + stock actual",prep_item:"Tarea prep...",amount_placeholder:"Cantidad (ej., 5 lbs)",priority_must:"Debe Hacer",priority_should:"Debería Hacer",priority_could:"Podría Hacer",assign_to:"Asignar a...",sync_ai_prep:"🤖 Sincronizar IA",must_do:"DEBE HACER — Crítico",should_do:"DEBERÍA HACER — Importante",could_do:"PODRÍA HACER — Si Hay Tiempo",completed:"COMPLETADO",prep_task:"Tarea",amount:"Cantidad",assigned:"Asignado",status:"Estado",completed_at:"Completado",weekly_schedule:"Horario BOH · Solo Personal Cocina",click_shift:"Haz clic en cualquier turno para cambiarlo",name_placeholder:"Nombre",chef:"Chef",sous_chef:"Sous Chef",pastry_chef:"Pastelero",line_cook:"Cocinero Línea",prep_cook:"Cocinero Prep",dishwasher:"Lavaplatos",hours:"Horas",wages:"Salarios",tax_35:"Impuesto 35%",total:"Total"
+  }
+};
+
+let currentLang = 'en';
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (i18n[lang][key]) el.placeholder = i18n[lang][key];
+  });
+  document.querySelectorAll('option[data-i18n]').forEach(opt => {
+    const key = opt.getAttribute('data-i18n');
+    if (i18n[lang][key]) opt.textContent = i18n[lang][key];
+  });
+  updateGreeting();
+  buildOrders();
+  buildPrep();
+  showToast(lang === 'es' ? 'Idioma cambiado a Español' : 'Language changed to English');
+}
+
+function updateGreeting() {
+  const d = new Date(), hr = d.getHours();
+  const greetEl = document.getElementById('rGreeting');
+  if (currentLang === 'es') {
+    greetEl.textContent = `${hr < 12 ? 'Buenos Días' : hr < 17 ? 'Buenas Tardes' : 'Buenas Noches'} Chef —`;
+  } else {
+    greetEl.textContent = `${hr < 12 ? 'Good Morning' : hr < 17 ? 'Good Afternoon' : 'Good Evening'} Chef —`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// DATA STORES - BOH ONLY
+// ═══════════════════════════════════════════════════════
+let ordersData = [
+  {i:"Chicken Breast 6oz",    par:"50 lbs",   onHand:"10 lbs",    q:"40 lbs",    s:"Low",   c:320, ai:true,  reason:"High comps last night"},
+  {i:"Salmon Fillet",          par:"30 lbs",   onHand:"5 lbs",     q:"25 lbs",    s:"Low",   c:450, ai:true},
+  {i:"Heavy Cream",            par:"3 cases",  onHand:"1 case",    q:"2 cases",   s:"Low",   c:180, ai:true},
+  {i:"Mise Herbs Mix",         par:"5 lbs",    onHand:"2 lbs",     q:"3 lbs",     s:"Watch", c:45,  ai:true,  reason:"Weekend prep"},
+  {i:"Olive Oil Extra Virgin", par:"2 cases",  onHand:"1 case",    q:"1 case",    s:"Watch", c:220, ai:true},
+  {i:"All-Purpose Flour",      par:"50 lbs",   onHand:"50 lbs",    q:"50 lbs",    s:"Par",   c:35,  ai:false},
+  {i:"Butter Unsalted",        par:"20 lbs",   onHand:"20 lbs",    q:"20 lbs",    s:"Par",   c:120, ai:true},
+  {i:"Eggs Large",             par:"15 dozen", onHand:"15 dozen",  q:"15 dozen",  s:"Par",   c:65,  ai:false}
+];
+
+let prepData = [
+  {task:"Butcher proteins - chicken", par:"40 lbs",      onHand:"0 lbs",      amount:"40 lbs",      priority:"must",   assign:"Sous Chef", status:"pending",ai:true, reason:"Friday service"},
+  {task:"Prep mise herbs",            par:"3 lbs",        onHand:"0 lbs",      amount:"3 lbs",        priority:"must",   assign:"Prep Cook", status:"pending",ai:true},
+  {task:"Stock - vegetable",          par:"4 gal",        onHand:"1 gal",      amount:"4 gal",        priority:"should", assign:"Line Cook", status:"pending",ai:true, reason:"Soup feature"},
+  {task:"Dessert prep - crème brûlée",par:"40 portions",  onHand:"10 portions",amount:"40 portions",  priority:"should", assign:"Pastry",    status:"pending",ai:true},
+  {task:"Deep clean line",            par:"Full",         onHand:"Not done",   amount:"Full",         priority:"could",  assign:"Anyone",    status:"pending",ai:false},
+  {task:"Inventory dry storage",      par:"Full count",   onHand:"Not done",   amount:"Full count",   priority:"could",  assign:"Anyone",    status:"pending",ai:true}
+];
+
+// ═══════════════════════════════════════════════════════
+// ORDERS FUNCTIONS
+// ═══════════════════════════════════════════════════════
+function buildOrders() {
+  const reds    = ordersData.filter(o => o.s === 'Low');
+  const yellows = ordersData.filter(o => o.s === 'Watch');
+  const greens  = ordersData.filter(o => o.s === 'Par');
+  const tc      = ordersData.reduce((a, o) => a + o.c, 0);
+
+  function sectionRow(label, dotClass, cols) {
+    return `<tr class="sec-label-row"><td colspan="${cols||6}"><span class="${dotClass}" style="display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle"></span>${label}</td></tr>`;
+  }
+
+  function rows(items) {
+    return items.map(o => {
+      const idx    = ordersData.indexOf(o);
+      const reason = o.reason ? `<div style="font-size:12px;color:var(--ink4)">${o.reason}</div>` : '';
+      return `<tr>
+        <td class="iname">${o.i}${reason}</td>
+        <td>${o.par || '—'}</td>
+        <td>${o.onHand || '—'}</td>
+        <td class="need-val">${o.q}</td>
+        <td>$${o.c}</td>
+        <td><button class="obtn-sm a" onclick="approveOrder(${idx})">✓</button><button class="obtn-sm edit" onclick="editOrder(${idx})">✎</button><button class="obtn-sm s" onclick="removeOrder(${idx})">✕</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('orderRed').innerHTML    = sectionRow('LOW STOCK — Order Now', 'dot-red',   6) + rows(reds);
+  document.getElementById('orderYellow').innerHTML = sectionRow('WATCH — Getting Low',   'dot-amber', 6) + rows(yellows);
+  document.getElementById('orderGreen').innerHTML  = sectionRow('PAR LEVEL — Routine',   'dot-green', 6) + rows(greens);
+
+  var _el_osTotalItems=document.getElementById('osTotalItems');if(_el_osTotalItems)_el_osTotalItems.textContent=ordersData.length;
+  var _el_osLow=document.getElementById('osLow');if(_el_osLow)_el_osLow.textContent=reds.length;
+  var _el_osWatch=document.getElementById('osWatch');if(_el_osWatch)_el_osWatch.textContent=yellows.length;
+  var _el_osCost=document.getElementById('osCost');if(_el_osCost)_el_osCost.textContent='$' + tc.toLocaleString();
+}
+
+function addOrderItem() {
+  const name     = document.getElementById('orderItemInput').value.trim();
+  const qty      = document.getElementById('orderQtyInput').value.trim();
+  const par      = document.getElementById('orderParInput').value.trim();
+  const onHand   = document.getElementById('orderHandInput').value.trim();
+  const priority = document.getElementById('orderPrioritySelect').value;
+  const cost     = parseInt(document.getElementById('orderCostInput').value) || 0;
+  if (!name) return;
+  ordersData.push({i:name, q:qty||'1 case', par:par||'—', onHand:onHand||'—', s:priority, c:cost, ai:false});
+  document.getElementById('orderItemInput').value  = '';
+  document.getElementById('orderQtyInput').value   = '';
+  document.getElementById('orderParInput').value   = '';
+  document.getElementById('orderHandInput').value  = '';
+  document.getElementById('orderCostInput').value  = '';
+  buildOrders();
+  showToast('Item added');
+}
+
+function approveOrder(idx) {
+  ordersData.splice(idx, 1);
+  buildOrders();
+  showToast(currentLang === 'es' ? 'Ordenado' : 'Ordered ✓');
+}
+
+function editOrder(idx) {
+  const o = ordersData[idx];
+  document.getElementById('orderItemInput').value        = o.i;
+  document.getElementById('orderQtyInput').value         = o.q;
+  document.getElementById('orderPrioritySelect').value   = o.s;
+  document.getElementById('orderCostInput').value        = o.c;
+  ordersData.splice(idx, 1);
+  buildOrders();
+}
+
+function removeOrder(idx) {
+  ordersData.splice(idx, 1);
+  buildOrders();
+}
+
+function syncOrdersAI() {
+  showToast(currentLang === 'es' ? 'Sincronizando con IA... (API no conectado)' : 'Syncing with AI... (API not connected)');
+}
+
+// ═══════════════════════════════════════════════════════
+// PREP LIST FUNCTIONS
+// ═══════════════════════════════════════════════════════
+function buildPrep() {
+  const must   = prepData.filter(p => p.priority === 'must'   && p.status !== 'done');
+  const should = prepData.filter(p => p.priority === 'should' && p.status !== 'done');
+  const could  = prepData.filter(p => p.priority === 'could'  && p.status !== 'done');
+  const done   = prepData.filter(p => p.status === 'done');
+
+  function calcNeed(p) {
+    const parNum  = parseFloat(p.par);
+    const handNum = parseFloat(p.onHand);
+    if (!isNaN(parNum) && !isNaN(handNum)) {
+      const need = parNum - handNum;
+      const unit = (p.par || '').replace(/[\d.]/g,'').trim();
+      return need > 0 ? `${need} ${unit}`.trim() : `<span style="color:var(--deepgreen-light);font-weight:700">✓</span>`;
+    }
+    return p.amount || '—';
+  }
+
+  function sectionRow(label, dotClass) {
+    return `<tr class="sec-label-row"><td colspan="5"><span class="${dotClass}" style="display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle"></span>${label}</td></tr>`;
+  }
+
+  function rows(items, isDone) {
+    return items.map(p => {
+      const idx    = prepData.indexOf(p);
+      const reason = p.reason ? `<div style="font-size:12px;color:var(--ink4)">${p.reason}</div>` : '';
+      const need   = isDone ? `<span style="color:var(--deepgreen-light)">✓</span>` : calcNeed(p);
+      const onH    = isDone ? p.completedAt || '—' : (p.onHand || '—');
+      const par    = isDone ? '—' : (p.par || '—');
+      const btn    = isDone
+        ? `<button class="obtn-sm s" onclick="uncompletePrep(${idx})">↩</button>`
+        : `<button class="obtn-sm a" onclick="completePrep(${idx})">✓</button>`;
+      return `<tr class="${isDone ? 'done-row' : ''}">
+        <td class="iname">${p.task}${reason}</td>
+        <td>${par}</td>
+        <td>${onH}</td>
+        <td class="need-val">${need}</td>
+        <td>${btn}<button class="obtn-sm edit" onclick="editPrep(${idx})">✎</button><button class="obtn-sm s" onclick="removePrep(${idx})">✕</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('prepMust').innerHTML   = sectionRow('MUST DO — Critical',    'dot-red')   + rows(must,   false);
+  document.getElementById('prepShould').innerHTML = sectionRow('SHOULD DO — Important', 'dot-amber') + rows(should, false);
+  document.getElementById('prepCould').innerHTML  = sectionRow('COULD DO — If Time',    'dot-green') + rows(could,  false);
+  document.getElementById('prepDone').innerHTML   = done.length ? sectionRow('COMPLETED','dot-green')+ rows(done,   true) : '';
+
+  var _el_prepCount=document.getElementById('prepCount');if(_el_prepCount)_el_prepCount.textContent=prepData.filter(p => p.status !== 'done').length + (currentLang === 'es' ? ' tareas pendientes' : ' tasks pending');
+  var _el_mustCount=document.getElementById('mustCount');if(_el_mustCount)_el_mustCount.textContent=must.length;
+  var _el_shouldCount=document.getElementById('shouldCount');if(_el_shouldCount)_el_shouldCount.textContent=should.length;
+  var _el_couldCount=document.getElementById('couldCount');if(_el_couldCount)_el_couldCount.textContent=could.length;
+  var _el_doneCount=document.getElementById('doneCount');if(_el_doneCount)_el_doneCount.textContent=done.length;
+}
+
+function addPrepItem() {
+  const task     = document.getElementById('prepItemInput').value.trim();
+  const amount   = document.getElementById('prepQtyInput').value.trim();
+  const priority = document.getElementById('prepPrioritySelect').value;
+  const assign   = document.getElementById('prepAssignInput').value.trim();
+  if (!task) return;
+  prepData.push({task, amount: amount||'As needed', priority, assign: assign||'Anyone', status:'pending', ai:false});
+  document.getElementById('prepItemInput').value   = '';
+  document.getElementById('prepQtyInput').value    = '';
+  document.getElementById('prepAssignInput').value = '';
+  buildPrep();
+  showToast(currentLang === 'es' ? 'Tarea agregada' : 'Task added');
+}
+
+function completePrep(idx) {
+  prepData[idx].status      = 'done';
+  prepData[idx].completedAt = new Date().toLocaleTimeString(currentLang === 'es' ? 'es-ES' : 'en-US', {hour:'2-digit', minute:'2-digit'});
+  buildPrep();
+  showToast(currentLang === 'es' ? '¡Completado!' : 'Completed! ✓');
+}
+
+function uncompletePrep(idx) {
+  prepData[idx].status = 'pending';
+  delete prepData[idx].completedAt;
+  buildPrep();
+}
+
+function editPrep(idx) {
+  const p = prepData[idx];
+  document.getElementById('prepItemInput').value       = p.task;
+  document.getElementById('prepQtyInput').value        = p.amount;
+  document.getElementById('prepPrioritySelect').value  = p.priority;
+  document.getElementById('prepAssignInput').value     = p.assign;
+  prepData.splice(idx, 1);
+  buildPrep();
+}
+
+function removePrep(idx) {
+  prepData.splice(idx, 1);
+  buildPrep();
+}
+
+function syncPrepAI() {
+  showToast(currentLang === 'es' ? 'Sincronizando prep con IA... (API no conectado)' : 'Syncing prep with AI... (API not connected)');
+}
+
+// ═══════════════════════════════════════════════════════
+// SCHEDULE FUNCTIONS - BOH ONLY
+// ═══════════════════════════════════════════════════════
+const SHIFTS = {
+  'OFF':    {label:'OFF',     hrs:0},
+  '6a-2p':  {label:'6a–2p',  hrs:8},
+  '7a-3p':  {label:'7a–3p',  hrs:8},
+  '8a-4p':  {label:'8a–4p',  hrs:8},
+  '10a-6p': {label:'10a–6p', hrs:8},
+  '2p-10p': {label:'2p–10p', hrs:8},
+  '3p-11p': {label:'3p–11p', hrs:8},
+  '11p-7a': {label:'11p–7a', hrs:8},
+  '6a-6p':  {label:'6a–6p',  hrs:12},
+  '8a-8p':  {label:'8a–8p',  hrs:12},
+  '6a-12p': {label:'6a–12p', hrs:6},
+  '9a-3p':  {label:'9a–3p',  hrs:6},
+  '12p-6p': {label:'12p–6p', hrs:6},
+  '4p-10p': {label:'4p–10p', hrs:6}
+};
+
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+let STAFF = [
+  {pos:'Sous Chef',    name:'Alice Goldberry', rate:26, d:['7a-3p','7a-3p','7a-3p','7a-3p','7a-3p','OFF','OFF']},
+  {pos:'Pastry Chef',  name:'Harry Right',     rate:24, d:['OFF','8a-4p','8a-4p','8a-4p','8a-4p','8a-4p','OFF']},
+  {pos:'Line Cook',    name:'Tom Tompson',     rate:20, d:['OFF','10a-6p','10a-6p','10a-6p','10a-6p','10a-6p','OFF']},
+  {pos:'Line Cook',    name:'Mary Watson',     rate:20, d:['6a-2p','OFF','6a-2p','6a-2p','6a-2p','6a-2p','OFF']},
+  {pos:'Line Cook',    name:'Greg Rice',       rate:20, d:['2p-10p','2p-10p','2p-10p','2p-10p','2p-10p','OFF','OFF']},
+  {pos:'Prep Cook',    name:'Dana Cruz',       rate:16, d:['6a-2p','6a-2p','6a-2p','6a-2p','6a-2p','OFF','OFF']},
+  {pos:'Prep Cook',    name:'Luis Vega',       rate:16, d:['OFF','OFF','6a-2p','6a-2p','6a-2p','6a-2p','6a-2p']},
+  {pos:'Dishwasher',   name:'Stella Grayson',  rate:15, d:['OFF','10a-6p','10a-6p','10a-6p','10a-6p','10a-6p','OFF']},
+  {pos:'Dishwasher',   name:'Bob Ryan',        rate:15, d:['4p-10p','4p-10p','OFF','4p-10p','4p-10p','4p-10p','OFF']}
+];
+
+let activePicker = null;
+
+function addEmployee() {
+  const n = document.getElementById('aeNameInput').value.trim();
+  const p = document.getElementById('aePosSelect').value;
+  const r = parseInt(document.getElementById('aeRateInput').value) || 20;
+  if (!n) { document.getElementById('aeNameInput').focus(); return; }
+  STAFF.push({pos:p, name:n, rate:r, d:['OFF','OFF','OFF','OFF','OFF','OFF','OFF']});
+  document.getElementById('aeNameInput').value = '';
+  buildSched();
+  showToast(currentLang === 'es' ? 'Empleado agregado' : 'Employee added');
+}
+
+function removeEmployee(i) {
+  STAFF.splice(i, 1);
+  buildSched();
+}
+
+function buildSched() {
+  const now   = new Date(), today = now.getDay();
+  const mon   = new Date(now);
+  mon.setDate(now.getDate() - ((today + 6) % 7));
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+
+  const locale = currentLang === 'es' ? 'es-ES' : 'en-US';
+  var _el_schedWeek=document.getElementById('schedWeek');if(_el_schedWeek)_el_schedWeek.textContent=mon.toLocaleDateString(locale,{month:'short',day:'numeric'}) + ' – ' +
+    sun.toLocaleDateString(locale,{month:'short',day:'numeric',year:'numeric'});
+  var _el_staffCount=document.getElementById('staffCount');if(_el_staffCount)_el_staffCount.textContent=STAFF.length + (currentLang === 'es' ? ' empleados BOH' : ' BOH staff');
+
+  const g = document.getElementById('schedGrid');
+  let h = `<thead><tr><th>${currentLang==='es'?'Posición':'Position'}</th><th>${currentLang==='es'?'Nombre':'Name'}</th>`;
+  DAYS.forEach(d => h += `<th>${d}</th>`);
+  h += '<th>Hrs</th><th></th></tr></thead><tbody>';
+
+  STAFF.forEach((e, ei) => {
+    h += `<tr><td>${e.pos}</td><td>${e.name}</td>`;
+    e.d.forEach((sh, di) => {
+      const s = SHIFTS[sh] || {label:sh, hrs:parseShiftHours(sh)};
+      const off = sh === 'OFF', lng = s.hrs >= 12;
+      h += `<td class="sc ${off?'s-off':(lng?'s-long':'s-on')}" onclick="openPick(event,${ei},${di})">${off?'OFF':s.label}</td>`;
+    });
+    const tot = e.d.reduce((a,sh) => a + (SHIFTS[sh]?.hrs ?? parseShiftHours(sh)), 0);
+    h += `<td style="text-align:center;font-weight:700;font-size:14px">${tot}h</td>`;
+    h += `<td style="text-align:center"><button class="remove-emp" onclick="removeEmployee(${ei})" title="Remove">✕</button></td></tr>`;
+  });
+
+  h += '</tbody>';
+  g.innerHTML = h;
+  recalcSched();
+}
+
+function openPick(ev, ei, di) {
+  ev.stopPropagation();
+  closePick();
+
+  const td = ev.currentTarget;
+  const current = STAFF[ei].d[di];
+
+  // Tiny inline input right in the cell
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.value = current === 'OFF' ? '' : current;
+  inp.placeholder = 'e.g. 9a-5p';
+  inp.style.cssText = 'width:90px;border:2px solid var(--deepgreen-light);border-radius:2px;padding:3px 6px;font-family:IBM Plex Mono,monospace;font-size:13px;font-weight:700;color:var(--ink);background:#fff;outline:none;position:relative;z-index:10';
+  inp.onclick = e => e.stopPropagation();
+
+  const offBtn = document.createElement('button');
+  offBtn.textContent = 'OFF';
+  offBtn.style.cssText = 'margin-left:4px;background:var(--red);border:none;color:#fff;padding:3px 8px;border-radius:2px;font-size:12px;font-weight:700;cursor:pointer;font-family:IBM Plex Mono,monospace';
+  offBtn.onclick = e => { e.stopPropagation(); pickS(ei,di,'OFF'); };
+
+  const wrap = document.createElement('span');
+  wrap.id = 'activePick';
+  wrap.appendChild(inp);
+  wrap.appendChild(offBtn);
+
+  td.innerHTML = '';
+  td.appendChild(wrap);
+
+  inp.focus();
+  inp.select();
+
+  inp.onkeydown = e => {
+    if (e.key === 'Enter') { e.stopPropagation(); pickCustom(ei,di,inp.value); }
+    if (e.key === 'Escape') { e.stopPropagation(); closePick(); buildSched(); }
+  };
+  inp.onblur = () => setTimeout(() => pickCustom(ei,di,inp.value), 150);
+
+  activePicker = wrap;
+}
+
+function closePick() {
+  if (activePicker) { activePicker = null; }
+}
+
+document.addEventListener('click', closePick);
+
+function pickS(ei, di, k) {
+  STAFF[ei].d[di] = k;
+  closePick();
+  buildSched();
+}
+
+function recalcSched() {
+  let tH = 0, tW = 0;
+  STAFF.forEach(e => {
+    const tot = e.d.reduce((a,sh) => a + (SHIFTS[sh]?.hrs ?? parseShiftHours(sh)), 0);
+    tH += tot;
+    const reg = Math.min(tot,40), ov = Math.max(0,tot-40);
+    tW += (reg * e.rate) + (ov * e.rate * 1.5);
+  });
+  const tax = Math.round(tW * .35);
+  var _el_stHrs=document.getElementById('stHrs');if(_el_stHrs)_el_stHrs.textContent=tH;
+  var _el_stWages=document.getElementById('stWages');if(_el_stWages)_el_stWages.textContent='$' + Math.round(tW).toLocaleString();
+  var _el_stTax=document.getElementById('stTax');if(_el_stTax)_el_stTax.textContent='$' + tax.toLocaleString();
+  var _el_stTotal=document.getElementById('stTotal');if(_el_stTotal)_el_stTotal.textContent='$' + (Math.round(tW) + tax).toLocaleString();
+}
+
+// ═══════════════════════════════════════════════════════
+// GO LIVE — Push schedule to Supabase for Cook & Owner
+// ═══════════════════════════════════════════════════════
+async function goLive() {
+  const btn = document.getElementById('goLiveBtn');
+  const status = document.getElementById('liveStatus');
+  btn.disabled = true;
+  btn.textContent = '⏳ Pushing…';
+
+  const payload = {
+    id: 'boh_schedule',
+    week: document.getElementById('schedWeek').textContent,
+    staff: STAFF,
+    pushed_at: new Date().toISOString(),
+    pushed_by: 'Chef'
+  };
+
+  // Save to localStorage so Cook Station & Manager can read it
+  localStorage.setItem('mc_live_schedule', JSON.stringify(payload));
+
+  // Push to Supabase if connected
+  if (typeof sbOK !== 'undefined' && sbOK) {
+    try {
+      await sbFetch('schedules', {
+        method: 'POST',
+        headers: { 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify(payload)
+      });
+    } catch(e) { console.error('Schedule push failed:', e); }
+  }
+
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  btn.innerHTML = '<span style="width:10px;height:10px;border-radius:50%;background:#fff;animation:glow-green 2.4s infinite;flex-shrink:0;display:inline-block;margin-right:8px"></span> LIVE · Pushed '+now;
+  btn.disabled = false;
+  if (status) status.textContent = 'Live · Pushed '+now+' — Cook Station updated';
+  showToast('✓ Schedule live — Cook Station can see it', 'success');
+}
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION & UTILS
+// ═══════════════════════════════════════════════════════
+function showLayer(id, ev) {
+  document.querySelectorAll('.layer, .back-layer').forEach(l => l.classList.remove('visible'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('layer-' + id).classList.add('visible');
+  if (ev && ev.currentTarget) ev.currentTarget.classList.add('active');
+  if (id === 'orders')   buildOrders();
+  if (id === 'prep')     buildPrep();
+  if (id === 'schedule') buildSched();
+  if (id === 'messages') { loadKitchenMessages('chef'); markKitchenRead('chef'); }
+}
+
+// ═══════════════════════════════════════════════════════
+// MESSAGES — 2 CHANNELS (Chef sees Broadcast + Manager↔Chef)
+// ═══════════════════════════════════════════════════════
+const CHEF_CH_KEYS = ['mc_msg_broadcast','mc_msg_mgr_chef'];
+const CHEF_CH_DESC = ['Team-wide messages from Owner','Private — between you and Manager only'];
+const CHEF_CH_PH   = ['Reply to broadcast…','Message to Manager…'];
+let chefActiveChannel = 0;
+
+function getMsgs(ch)    { return JSON.parse(localStorage.getItem(CHEF_CH_KEYS[ch]||'mc_msg_broadcast') || '[]'); }
+function saveMsgs(ch,m) { localStorage.setItem(CHEF_CH_KEYS[ch]||'mc_msg_broadcast', JSON.stringify(m)); }
+function getMessages()  { return getMsgs(0); }
+function saveMessages(m){ saveMsgs(0,m); }
+
+function switchChefChannel(ch) {
+  chefActiveChannel = ch;
+  const desc = document.getElementById('chefChDesc');
+  const inp  = document.getElementById('chefMsgInput');
+  if (desc) desc.textContent = CHEF_CH_DESC[ch];
+  if (inp)  inp.placeholder  = CHEF_CH_PH[ch];
+  [0,1].forEach(i => {
+    const btn = document.getElementById('chBtn'+i); if (!btn) return;
+    if (i===ch){btn.style.background='var(--deepgreen-light)';btn.style.borderColor='var(--deepgreen-light)';btn.style.color='#fff';}
+    else{btn.style.background='transparent';btn.style.borderColor='var(--rule)';btn.style.color='var(--ink3)';}
+  });
+  renderKitchenThread(getMsgs(ch), 'chef');
+}
+
+function loadKitchenMessages(role) {
+  updateKitchenDot(role);
+  switchChefChannel(0);
+}
+
+function markKitchenRead(role) {
+  [0,1].forEach(ch => {
+    const msgs = getMsgs(ch);
+    msgs.forEach(m => { if (m.from !== 'chef') m.readByKitchen = true; });
+    saveMsgs(ch, msgs);
+  });
+  updateKitchenDot(role);
+}
+
+function updateKitchenDot(role) {
+  let unread = 0;
+  [0,1].forEach(ch => { unread += getMsgs(ch).filter(m => m.from !== 'chef' && !m.readByKitchen).length; });
+  const dot   = document.getElementById('chefMsgDot');
+  const count = document.getElementById('chefUnreadCount');
+  if (dot) { dot.style.display = unread > 0 ? 'inline-block' : 'none'; }
+  if (count) count.textContent = unread > 0 ? `${unread} unread` : '';
+  const faceDot    = document.getElementById('chefMsgFaceDot');
+  const faceLabel  = document.getElementById('chefMsgFaceLabel');
+  const facePreview= document.getElementById('chefMsgFacePreview');
+  if (faceDot) { faceDot.style.display='inline-block'; faceDot.style.background='#7a0a2a'; faceDot.style.opacity=unread>0?'1':'0.25'; faceDot.style.animation=unread>0?'glow-burgundy 1.6s ease-in-out infinite':'none'; }
+  if (faceLabel)   faceLabel.textContent  = unread > 0 ? `Messages — ${unread} Unread` : 'Messages';
+  if (facePreview) facePreview.textContent = unread > 0 ? 'Tap to read' : 'Tap to message Manager';
+}
+
+function renderKitchenThread(msgs, role) {
+  const el = document.getElementById('chefMsgThread'); if (!el) return;
+  if (!msgs.length) { el.innerHTML=`<div class="msg-empty">No messages yet</div>`; return; }
+  let html='', lastDate='';
+  msgs.forEach(m => {
+    const d=new Date(m.ts);
+    const date=d.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});
+    const time=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const isMe=m.from===role||m.from==='chef';
+    if(date!==lastDate){html+=`<div class="msg-date-divider">${date}</div>`;lastDate=date;}
+    html+=`<div class="msg-bubble-wrap ${isMe?'from-kitchen':'from-owner'}">
+      <div class="msg-bubble ${isMe?'kitchen':'owner'}">${m.text}</div>
+      <div class="msg-meta ${isMe?'kitchen':''}">${m.senderLabel||m.from} · ${time}</div>
+    </div>`;
+  });
+  el.innerHTML=html; el.scrollTop=el.scrollHeight;
+}
+
+async function sendKitchenMsg(role) {
+  const input=document.getElementById('chefMsgInput');
+  const text=input.value.trim(); if(!text)return;
+  const msg={id:'msg_'+Date.now().toString(36),from:'chef',senderLabel:'Chef',channel:chefActiveChannel,text,ts:new Date().toISOString(),read:false,readByKitchen:true};
+  const msgs=getMsgs(chefActiveChannel); msgs.push(msg); saveMsgs(chefActiveChannel,msgs);
+  input.value='';
+  renderKitchenThread(msgs,role);
+  updateKitchenDot(role);
+  if(typeof sbOK!=='undefined'&&sbOK){try{await sbFetch('messages',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(msg)});}catch(e){console.error(e);}}
+  showToast('Message sent');
+}
+
+
+
+function showToast(m) {
+  const t = document.getElementById('toastEl');
+  t.textContent = m;
+  t.className = 'toast s show';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const d = new Date();
+  const locale = typeof currentLang !== 'undefined' && currentLang === 'es' ? 'es-ES' : 'en-US';
+  const dateStr = d.toLocaleDateString(locale, {
+    weekday:'long', year:'numeric', month:'long', day:'numeric'
+  }).toUpperCase();
+  const isMonday = d.getDay() === 1;
+  const rDateEl = document.getElementById('rDate');
+  if(rDateEl){
+    rDateEl.innerHTML = isMonday
+      ? '<span style="color:var(--maroon);font-weight:900">'+dateStr+'</span>'
+      : dateStr;
+  }
+  updateGreeting();
+  buildOrders();
+  buildPrep();
+  buildSched();
+  updateKitchenDot('chef'); // show unread dot if owner sent a message
+
+  fetch('https://wttr.in/?format=%t+%C&lang=en')
+    .then(r => r.text())
+    .then(t => {
+      const el = document.getElementById('rTemp');
+      if (el) el.textContent = '🌡 ' + t.trim();
+    })
+    .catch(() => {
+      const el = document.getElementById('rTemp');
+      if (el) el.textContent = '';
+    });
+});
+</script>
+</body>
+</html>
