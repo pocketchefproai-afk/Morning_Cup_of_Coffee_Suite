@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mourning Cup of Coffee · Recipe Book</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f5f0e8;--paper2:#ede8de;--paper3:#e0dbd0;
+  --ink:#1a1510;--ink2:#3a3020;--ink3:#6a6050;--ink4:#9a9080;
+  --rule:#c8c0b0;--rule2:#b0a890;
+  --deepgreen:#0d3322;--deepgreen-light:#1a5c30;--maroon:#60071D;
+  --red:#8b2020;--spine:#1e1c16;--amber:#c8800a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000e08;font-family:'IBM Plex Mono',monospace;min-height:100vh;padding-bottom:120px}
+
+/* ── HEADER ── */
+header{
+  background:linear-gradient(180deg,var(--deepgreen) 0%,#001a10 100%);
+  border-bottom:5px solid var(--maroon);padding:22px 40px;display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:200;box-shadow:0 4px 30px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.06) inset;
+  gap:16px;flex-wrap:wrap;overflow:hidden;position:relative;
+}
+header::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08) 0%,transparent 50%);pointer-events:none}
+.brand-name{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:#c4724a;letter-spacing:6px;text-transform:uppercase}
+.brand-sub{font-size:12px;color:#E4CDCF;letter-spacing:4px;text-transform:uppercase;margin-top:4px}
+.hright{display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.pill{font-size:13px;font-weight:700;padding:8px 16px;border-radius:2px;border:2px solid var(--maroon);color:#E4CDCF;background:var(--maroon);cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:all .2s;font-family:inherit}
+.pill:hover{background:#80091F;color:#fff}
+.pill.outline{background:transparent;border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+.pill.outline:hover{background:var(--deepgreen-light);color:#fff}
+.stat{font-size:13px;color:var(--deepgreen-light);font-weight:700;letter-spacing:1px}
+.tpill{border-color:var(--deepgreen-light);color:var(--deepgreen-light);background:transparent}
+.tpill.warn{border-color:var(--red);color:var(--red)}
+
+/* ── USAGE BANNER ── */
+.usage-banner{
+  background:rgba(13,51,34,.95);border-bottom:3px solid var(--deepgreen-light);
+  padding:12px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.ub-label{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--deepgreen-light);letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
+.ub-track{flex:1;min-width:140px;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.ub-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--deepgreen),var(--deepgreen-light));transition:width .5s}
+.ub-fill.hot{background:linear-gradient(90deg,var(--amber),var(--red))}
+.ub-stat{font-size:12px;font-weight:700;color:var(--deepgreen-light);white-space:nowrap}
+.ub-reset{font-size:11px;color:var(--ink4);white-space:nowrap}
+
+/* ── MAIN ── */
+.main{max-width:860px;margin:36px auto;padding:0 20px 60px}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+.fbtn{font-size:12px;font-weight:700;letter-spacing:1px;padding:7px 14px;border-radius:2px;border:2px solid rgba(26,92,48,.3);color:var(--ink4);background:transparent;cursor:pointer;transition:all .2s;text-transform:uppercase;font-family:inherit}
+.fbtn:hover{border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+.fbtn.on{background:var(--deepgreen-light);border-color:var(--deepgreen-light);color:#fff}
+.fsearch{flex:1;min-width:160px;background:var(--paper2);border:2px solid var(--rule);border-radius:2px;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s}
+.fsearch::placeholder{color:var(--ink4)}
+.fsearch:focus{border-color:var(--deepgreen-light)}
+
+/* ── CREATE FORM ── */
+.create-form{background:var(--paper);border:3px solid var(--deepgreen-light);border-radius:2px;padding:28px 32px;margin-bottom:36px;display:none;box-shadow:2px 3px 0 var(--paper3),0 20px 40px rgba(0,0,0,.4)}
+.create-form.open{display:block}
+.fhead{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.fhead-title{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--ink);text-transform:uppercase;letter-spacing:3px}
+.hbadge{font-size:11px;font-weight:700;color:var(--deepgreen-light);border:2px solid var(--deepgreen-light);padding:3px 10px;border-radius:2px;background:rgba(26,92,48,.08);letter-spacing:2px;text-transform:uppercase}
+
+.ubar{margin-bottom:18px;background:rgba(26,92,48,.07);border:2px solid rgba(26,92,48,.2);border-radius:2px;padding:12px 16px}
+.urow{display:flex;justify-content:space-between;margin-bottom:7px}
+.utxt{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.unum{font-size:13px;font-weight:700;color:var(--deepgreen-light)}
+.utrack{height:4px;background:rgba(0,0,0,.1);border-radius:2px;overflow:hidden}
+.ufill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--deepgreen),var(--deepgreen-light));transition:width .5s}
+.ufill.hot{background:linear-gradient(90deg,var(--amber),var(--red))}
+.unote{font-size:11px;color:var(--ink4);margin-top:6px}
+
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.ff{display:flex;flex-direction:column;gap:6px}
+.ff.full{grid-column:1/-1}
+.fl{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)}
+.fi,.fs,.ft{background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:10px 14px;font-size:15px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-weight:500;outline:none;transition:border-color .2s}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--deepgreen-light)}
+.ft{min-height:65px;resize:vertical;line-height:1.5}
+
+/* ── INGREDIENT BUILDER ── */
+.ing-builder-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ing-builder-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)}
+.ing-add-btn{font-size:12px;font-weight:700;letter-spacing:1px;padding:6px 14px;border-radius:2px;border:2px solid var(--deepgreen-light);color:var(--deepgreen-light);background:transparent;cursor:pointer;transition:all .2s;text-transform:uppercase;font-family:inherit}
+.ing-add-btn:hover{background:var(--deepgreen-light);color:#fff}
+.ing-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.ing-row{display:grid;grid-template-columns:2fr 1fr 1fr 80px 36px;gap:8px;align-items:center}
+.ing-row input,.ing-row select{background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:9px 12px;font-size:13px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-weight:500;outline:none;transition:border-color .2s;width:100%}
+.ing-row input:focus,.ing-row select:focus{border-color:var(--deepgreen-light)}
+.ing-del{background:rgba(139,32,32,.1);border:2px solid rgba(139,32,32,.3);color:var(--red);border-radius:2px;width:36px;height:36px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.ing-del:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.ing-cost-total{font-size:13px;color:var(--ink3);text-align:right;padding:6px 0}
+.ing-cost-total span{color:var(--deepgreen-light);font-weight:700;font-size:15px}
+
+.gbtn{width:100%;background:var(--deepgreen);border:2px solid var(--deepgreen-light);color:#fff;padding:15px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:4px}
+.gbtn:hover{background:var(--deepgreen-light)}
+.gbtn:disabled{opacity:.4;cursor:not-allowed}
+.save-draft-btn{width:100%;background:transparent;border:2px solid var(--maroon);color:var(--maroon);padding:13px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:8px}
+.save-draft-btn:hover{background:rgba(96,7,29,.08)}
+
+/* ── FORM DEPARTMENTS ── */
+.form-dept{border:2px solid var(--rule);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.form-dept-head{background:var(--paper2);border-bottom:2px solid var(--rule);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.form-dept-num{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--maroon);line-height:1;min-width:32px}
+.form-dept-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ink)}
+.form-dept-sub{font-size:11px;color:var(--ink4);letter-spacing:1px;margin-left:auto}
+.form-dept-body{padding:20px;background:rgba(255,255,255,.3)}
+.form-dept-body .fg{margin-bottom:0}
+
+/* ── LIVE PREVIEW ── */
+.live-preview-wrap{margin-top:28px;border-top:2px dashed var(--rule2);padding-top:24px}
+.lp-label{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--deepgreen-light);margin-bottom:14px;display:flex;align-items:center;gap:10px;background:var(--spine);padding:10px 16px;border-radius:2px}
+.lp-dot{width:9px;height:9px;border-radius:50%;background:var(--deepgreen-light);flex-shrink:0;animation:glow-green 1.5s infinite}
+@keyframes glow-green{0%,100%{box-shadow:0 0 8px 4px var(--deepgreen-light)}50%{box-shadow:0 0 2px 1px var(--deepgreen-light)}}
+
+/* ── CAROUSEL NAV ── */
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.arr{background:var(--spine);border:3px solid var(--deepgreen-light);color:var(--deepgreen-light);width:50px;height:50px;border-radius:50%;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.arr:hover{background:var(--deepgreen-light);color:#fff}
+.arr:disabled{opacity:.2;cursor:default}
+.nav-mid{text-align:center}
+.nav-count{font-size:14px;color:var(--ink4);letter-spacing:2px}
+.dots{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;max-width:400px;margin-top:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(26,92,48,.2);cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.on{background:var(--deepgreen-light);transform:scale(1.4)}
+
+/* ── PAPER CARD ── */
+.paper-card{
+  background:var(--paper);border-radius:2px;
+  box-shadow:2px 3px 0 var(--paper3),4px 6px 0 #ccc8b4,0 16px 40px rgba(0,0,0,.5);
+  position:relative;overflow:hidden;
+}
+.paper-card::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,transparent 0px,transparent 31px,rgba(180,155,110,.13) 31px,rgba(180,155,110,.13) 32px);pointer-events:none;z-index:1}
+.paper-card::before{content:'';position:absolute;left:62px;top:0;bottom:0;width:2px;background:rgba(96,7,29,.15);z-index:2}
+.hole{position:absolute;left:18px;width:26px;height:26px;border-radius:50%;background:#000e08;z-index:3;box-shadow:inset 0 2px 4px rgba(0,0,0,.5)}
+.hole:nth-child(1){top:36px}
+.hole:nth-child(2){top:50%;transform:translateY(-50%)}
+.hole:nth-child(3){bottom:36px}
+.cbody{padding:28px 28px 24px 82px;position:relative;z-index:4}
+
+.c-name{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--ink);text-transform:uppercase;letter-spacing:.5px;line-height:1;margin-bottom:4px}
+.c-name-es{font-family:'Special Elite',serif;font-size:18px;color:var(--ink3);margin-bottom:16px;font-style:italic}
+.c-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font-size:12px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:2px;border:2px solid;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.chip-grey{border-color:var(--rule);color:var(--ink4)}
+.chip-dgrey{border-color:var(--ink4);color:var(--ink3)}
+.chip-amber{border-color:var(--amber);color:var(--amber)}
+.chip-green{border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+.chip-red{border-color:var(--maroon);color:var(--maroon);background:rgba(96,7,29,.06)}
+.chip-log{border-color:var(--deepgreen-light);color:var(--deepgreen-light);background:rgba(26,92,48,.07)}
+.c-divider{border:none;border-top:2px solid var(--rule);margin:18px 0}
+.c-cost-row{display:flex;justify-content:space-between;align-items:flex-end}
+.c-total{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:var(--ink);line-height:1}
+.c-portion{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--ink3);margin-top:4px}
+.c-pct{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:900}
+.pct-ok{color:var(--deepgreen-light)}
+.pct-warn{color:var(--red)}
+.c-open{width:100%;margin-top:20px;background:var(--deepgreen);border:2px solid var(--deepgreen-light);color:#fff;padding:14px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.c-open:hover{background:var(--deepgreen-light)}
+.card-actions{display:flex;gap:8px;margin-top:8px}
+.push-btn{flex:1;background:var(--deepgreen-light);color:#fff;border:none;padding:10px 14px;border-radius:2px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.push-btn:hover{background:var(--deepgreen)}
+.push-btn.live{background:var(--ink4);cursor:default}
+.delete-btn{background:rgba(139,32,32,.1);border:2px solid rgba(139,32,32,.3);color:var(--red);padding:10px 14px;border-radius:2px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.delete-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+
+.empty{text-align:center;padding:80px 40px;color:var(--ink4)}
+.empty h2{font-family:'Special Elite',serif;font-size:36px;margin-bottom:10px;color:var(--ink3)}
+.empty p{font-size:12px;letter-spacing:3px;text-transform:uppercase;opacity:.5}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;overflow-y:auto;padding:40px 20px}
+.overlay.open{display:flex;align-items:flex-start;justify-content:center}
+.modal{background:var(--paper);border-radius:2px;max-width:820px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.8);border-top:8px solid var(--maroon);animation:rise .25s ease}
+@keyframes rise{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.mclose{position:absolute;top:16px;right:16px;background:var(--spine);border:none;color:var(--deepgreen-light);font-size:28px;width:44px;height:44px;border-radius:50%;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;font-weight:300;transition:all .2s}
+.mclose:hover{background:var(--deepgreen-light);color:#fff;transform:rotate(90deg)}
+.mbody{padding:40px;max-height:85vh;overflow-y:auto}
+
+.rp-name{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--ink);margin-bottom:4px;line-height:1}
+.rp-name-es{font-family:'Special Elite',serif;font-size:22px;color:var(--ink3);margin-bottom:16px;font-style:italic}
+.rp-chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
+.rp-head{border-bottom:3px solid var(--ink);padding-bottom:20px;margin-bottom:24px}
+.lang-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.lang-toggle-lbl{font-size:11px;color:var(--ink3);letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.ltbtn{font-size:12px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:2px;border:2px solid var(--rule);color:var(--ink3);background:transparent;cursor:pointer;transition:all .15s;text-transform:uppercase;font-family:inherit}
+.ltbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+.cost-bar{background:var(--paper2);border:2px solid var(--rule);border-radius:2px;padding:20px 24px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.cost-big{font-family:'Barlow Condensed',sans-serif;font-size:60px;font-weight:900;color:var(--ink);line-height:1}
+.cost-meta{display:flex;gap:24px;flex-wrap:wrap}
+.cm{display:flex;flex-direction:column;gap:2px}
+.cm-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.cm-val{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--ink)}
+.scale-row{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:14px;border-top:2px solid var(--rule);flex-wrap:wrap}
+.slbl{font-size:12px;color:var(--ink3);letter-spacing:1px;text-transform:uppercase;font-weight:700}
+.sbtn{background:transparent;border:2px solid var(--rule);color:var(--ink2);padding:6px 16px;border-radius:2px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.sbtn:hover,.sbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+.sh{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--maroon);margin:28px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.ing-table{width:100%;margin-bottom:28px;border-collapse:collapse}
+.ing-table tr{border-bottom:1px solid rgba(0,0,0,.08)}
+.ing-table tr:first-child{border-top:2px solid rgba(0,0,0,.15)}
+.ing-table td{padding:13px 0;vertical-align:middle}
+.td-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--ink)}
+.td-qty{text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--maroon);white-space:nowrap}
+.td-cost{text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--deepgreen-light);white-space:nowrap}
+.ing-total-row td{border-top:3px solid var(--ink);padding-top:14px;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--ink)}
+
+.steps{margin-bottom:28px}
+.step{display:flex;gap:16px;margin-bottom:10px;padding:14px 18px;background:rgba(0,0,0,.025);border-left:4px solid var(--rule)}
+.snum{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--maroon);min-width:40px;flex-shrink:0;line-height:1.2}
+.stxt{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:600;line-height:1.35;color:var(--ink)}
+
+.plating{background:rgba(26,92,48,.07);border-left:6px solid var(--deepgreen-light);padding:16px 20px;border-radius:2px;margin-bottom:28px}
+.plating-line{font-family:'Special Elite',serif;font-size:19px;color:var(--ink2);line-height:1.6;margin-bottom:4px}
+
+.cook-log{margin-top:32px;background:rgba(26,92,48,.05);border:2px solid rgba(26,92,48,.25);border-radius:2px;padding:24px}
+.cl-head{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--deepgreen-light);margin-bottom:6px}
+.cl-sub{font-size:12px;color:var(--ink3);margin-bottom:20px;line-height:1.6}
+.cgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+.ck{display:flex;flex-direction:column;gap:6px}
+.ck-lbl{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);line-height:1.5}
+.ck-inp{background:rgba(255,255,255,.85);border:2px solid rgba(26,92,48,.25);border-radius:2px;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:var(--ink);outline:none;transition:border-color .2s;width:100%}
+.ck-inp:focus{border-color:var(--deepgreen-light)}
+.ccalcs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;padding:14px;background:rgba(0,0,0,.04);border-radius:2px}
+.cc{display:flex;flex-direction:column;gap:3px}
+.cc-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.cc-val{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900}
+.plive{width:100%;background:var(--deepgreen-light);border:none;color:#fff;padding:14px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.plive:hover{background:var(--deepgreen)}
+.plive.done{background:var(--ink4);cursor:default}
+.plive:disabled{opacity:.5;cursor:not-allowed}
+
+.mfooter{display:flex;gap:10px;padding-top:20px;border-top:2px solid var(--rule);flex-wrap:wrap}
+.mbtn{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:12px 24px;border-radius:2px;cursor:pointer;border:2px solid;transition:all .2s;background:transparent}
+.mbtn-save{border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+.mbtn-print{border-color:var(--maroon);color:var(--maroon)}
+.mbtn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--spine);color:var(--paper);padding:12px 24px;border-radius:2px;font-size:13px;font-weight:700;letter-spacing:2px;border-left:5px solid var(--deepgreen-light);z-index:9999;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-left-color:var(--deepgreen-light)}
+.toast.error{border-left-color:var(--red)}
+
+/* ── CHEF ASSISTANT ── */
+.chat-bar{position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--deepgreen);border-top:3px solid var(--deepgreen-light);box-shadow:0 -4px 24px rgba(0,0,0,.6);font-family:'IBM Plex Mono',monospace}
+.chat-bar-header{display:flex;align-items:center;gap:12px;padding:10px 24px;cursor:pointer;user-select:none}
+.chat-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff}
+.chat-sub{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase}
+.chat-toggle{margin-left:auto;font-size:12px;color:var(--deepgreen-light);letter-spacing:1px}
+.chat-dot{width:8px;height:8px;border-radius:50%;background:var(--deepgreen-light);margin-left:8px;display:inline-block;animation:glow-green 2s infinite}
+.chat-body{display:none;border-top:2px solid var(--deepgreen-light)}
+.chat-body.open{display:flex;flex-direction:column}
+.chat-messages{height:240px;overflow-y:auto;padding:16px 24px;background:#001a10;display:flex;flex-direction:column;gap:10px}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--deepgreen-light);border-radius:2px}
+.msg{max-width:80%;padding:10px 14px;border-radius:2px;font-size:14px;line-height:1.5}
+.msg.user{background:var(--deepgreen);color:#fff;align-self:flex-end;border:1px solid var(--deepgreen-light);font-family:'IBM Plex Mono',monospace}
+.msg.ai{background:rgba(26,92,48,.15);color:var(--paper);align-self:flex-start;border:1px solid rgba(26,92,48,.3);font-family:'IBM Plex Mono',monospace}
+.msg.ai strong{color:var(--deepgreen-light);font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:4px}
+.msg.thinking{opacity:.5;font-style:italic;font-size:12px}
+.chat-input-row{display:flex;gap:0;border-top:2px solid var(--deepgreen-light);background:var(--deepgreen)}
+.chat-input{flex:1;background:transparent;border:none;padding:14px 20px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#fff;outline:none}
+.chat-input::placeholder{color:rgba(255,255,255,.3)}
+.chat-send{background:var(--deepgreen-light);border:none;color:#fff;padding:14px 24px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.chat-send:hover{background:#236b3a}
+.chat-send:disabled{opacity:.4;cursor:not-allowed}
+
+@media print{
+  body{background:white!important;padding-bottom:0}
+  header,.usage-banner,.chat-bar,.toast{display:none!important}
+  @page{margin:.5in;size:letter}
+}
+@media(max-width:600px){
+  .mbody{padding:20px}
+  .rp-name{font-size:38px}
+  .cost-big{font-size:44px}
+  .cgrid{grid-template-columns:1fr 1fr}
+  .ccalcs{grid-template-columns:1fr 1fr}
+  .fg{grid-template-columns:1fr}
+  .ing-row{grid-template-columns:1fr 1fr 1fr 60px 36px}
+  header{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="brand-name">Mourning Cup of Coffee</div>
+    <div class="brand-sub">Chef's Recipe Book · Built by a Chef for a Chef</div>
+  </div>
+  <div class="hright">
+    <span class="stat" id="recipeCount">0 Recipes</span>
+    <button class="pill tpill" id="tpill">0 / 15 hrs</button>
+    <button class="pill" onclick="toggleForm()">＋ New Recipe</button>
+  </div>
+</header>
+
+<!-- USAGE BANNER -->
+<div class="usage-banner" id="usageBanner">
+  <span class="ub-label">⚡ AI Usage</span>
+  <div class="ub-track"><div class="ub-fill" id="ubFill" style="width:0%"></div></div>
+  <span class="ub-stat" id="ubStat">0 / 15 hrs used</span>
+  <span class="ub-reset" id="ubReset">Resets 1st of month</span>
+</div>
+
+<div class="main" id="appMain">
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <button class="fbtn on" onclick="setFilter('all',this)">All</button>
+    <button class="fbtn" onclick="setFilter('active',this)">Active</button>
+    <button class="fbtn" onclick="setFilter('approved',this)">Approved</button>
+    <button class="fbtn" onclick="setFilter('testing',this)">Testing</button>
+    <button class="fbtn" onclick="setFilter('draft',this)">Draft</button>
+    <input class="fsearch" type="text" id="fsearch" placeholder="Search recipes…" oninput="filterRecipes()">
+  </div>
+
+  <!-- Create Form -->
+  <div class="create-form" id="createForm">
+    <div class="fhead">
+      <div class="fhead-title">New Recipe</div>
+      <span class="hbadge">Claude Haiku</span>
+    </div>
+
+    <div class="ubar">
+      <div class="urow">
+        <span class="utxt">Monthly AI Limit — 15 Hours</span>
+        <span class="unum" id="unum">0 / 15 hrs</span>
+      </div>
+      <div class="utrack"><div class="ufill" id="ufill" style="width:0%"></div></div>
+      <div class="unote" id="unote">Resets 1st of month</div>
+    </div>
+
+    <!-- DEPT 1: THE DISH -->
+    <div class="form-dept">
+      <div class="form-dept-head">
+        <div class="form-dept-num">1</div>
+        <div class="form-dept-title">The Dish</div>
+        <div class="form-dept-sub">Name · Protein · Cost · Portions</div>
+      </div>
+      <div class="form-dept-body">
+        <div class="fg">
+          <div class="ff full">
+            <label class="fl">Dish Name</label>
+            <input class="fi" id="fName" placeholder="e.g. Miso Glazed Black Cod" oninput="updatePreview()">
+          </div>
+          <div class="ff">
+            <label class="fl">Main Protein</label>
+            <select class="fs" id="fProt" onchange="proteinChanged()">
+              <option value="">— Select —</option>
+              <option>Beef</option><option>Chicken</option><option>Duck</option><option>Lamb</option>
+              <option>Pork</option><option>Salmon</option><option>Sea Bass</option><option>Cod</option>
+              <option>Lobster</option><option>Scallops</option><option>Shrimp</option><option>Vegetarian</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label class="fl">Target Food Cost %</label>
+            <input class="fi" type="number" id="fCost" placeholder="28" min="10" max="50" oninput="updatePreview()">
+          </div>
+          <div class="ff">
+            <label class="fl">Portions</label>
+            <input class="fi" type="number" id="fPortions" placeholder="10" min="1" max="100" value="10" oninput="updatePreview()">
+          </div>
+          <div class="ff">
+            <label class="fl">Menu Price ($)</label>
+            <input class="fi" type="number" id="fMenuPrice" placeholder="35" min="1" oninput="updatePreview()">
+          </div>
+          <div class="ff">
+            <label class="fl">Status</label>
+            <select class="fs" id="fStatus" onchange="updatePreview()">
+              <option value="draft">Draft</option>
+              <option value="testing">Testing</option>
+              <option value="approved">Approved</option>
+              <option value="active">Active</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPT 2: INGREDIENTS -->
+    <div class="form-dept">
+      <div class="form-dept-head">
+        <div class="form-dept-num">2</div>
+        <div class="form-dept-title">Ingredients</div>
+        <div class="form-dept-sub">Select protein above to pre-fill</div>
+      </div>
+      <div class="form-dept-body">
+        <div class="ing-builder-head" style="margin-bottom:12px">
+          <span class="ing-builder-title" style="opacity:0">—</span>
+          <button class="ing-add-btn" onclick="addIngRow()">＋ Add Ingredient</button>
+        </div>
+        <div class="ing-rows" id="ingRows"></div>
+        <div class="ing-cost-total">Estimated Total Cost: <span id="ingCostTotal">$0.00</span></div>
+      </div>
+    </div>
+
+    <!-- DEPT 3: TECHNIQUE & INSPIRATION -->
+    <div class="form-dept">
+      <div class="form-dept-head">
+        <div class="form-dept-num">3</div>
+        <div class="form-dept-title">Technique & Inspiration</div>
+        <div class="form-dept-sub">Haiku reads this when generating</div>
+      </div>
+      <div class="form-dept-body">
+        <div class="fg">
+          <div class="ff full">
+            <label class="fl">Technique Notes</label>
+            <textarea class="ft" id="fTechnique" placeholder="Key techniques — searing method, sauce style, cooking temps, timing notes…" style="min-height:80px"></textarea>
+          </div>
+          <div class="ff full">
+            <label class="fl">Inspiration</label>
+            <textarea class="ft" id="fNotes" placeholder="Flavor profile, influences, story behind the dish, what you're going for…" style="min-height:80px"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="gbtn" onclick="generate()" id="genBtn">⚡ Generate Full Recipe with Haiku — Auto-translates to Spanish</button>
+    <button class="save-draft-btn" onclick="saveDraft()">💾 Save as Draft (No AI)</button>
+
+    <!-- LIVE PREVIEW -->
+    <div class="live-preview-wrap" id="livePreviewWrap" style="display:block;margin-top:32px;border-top:2px dashed var(--rule2);padding-top:24px">
+      <div class="lp-label"><div class="lp-dot"></div> Live Preview — Card updates as you type</div>
+      <div id="livePreviewCard">
+        <div class="paper-card" style="opacity:.5">
+          <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+          <div class="cbody">
+            <div class="c-name" style="color:var(--ink3);font-size:32px;font-style:italic">Dish name will appear here…</div>
+            <div class="c-chips" style="margin-top:12px">
+              <span class="chip chip-grey">Ingredients</span>
+              <span class="chip chip-grey">Status</span>
+              <span class="chip chip-grey">Protein</span>
+            </div>
+            <hr class="c-divider">
+            <div class="c-cost-row">
+              <div>
+                <div class="c-total" style="color:var(--ink3)">$0.00</div>
+                <div class="c-portion" style="color:var(--ink3)">Cost calculates as you add ingredients</div>
+              </div>
+              <div class="c-pct" style="color:var(--ink3)">--%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="carousel"></div>
+</div>
+
+<!-- RECIPE MODAL -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="mclose" onclick="closeModal()">×</button>
+    <div class="mbody" id="mbody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
+const SB_URL   = 'YOUR_SUPABASE_URL_HERE';
+const SB_KEY   = 'YOUR_SUPABASE_ANON_KEY_HERE';
+const HAIKU_KEY= 'YOUR_ANTHROPIC_KEY_HERE';
+const sbOK = SB_URL !== 'YOUR_SUPABASE_URL_HERE';
+
+const MONTHLY_LIMIT_MINS = 900;
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let recipes = [], filteredRecipes = [], idx = 0;
+let currentChef = { name:'Guest', role:'viewer' };
+let modalLang = 'en';
+let activeFilter = 'all';
+
+window.addEventListener('DOMContentLoaded', () => { checkReset(); loadRecipes(); });
+
+// ═══════════════════════════════════════════════
+// USAGE TRACKING
+// ═══════════════════════════════════════════════
+function getUsageKey(){ return `mcUsage_${currentChef?.name||'guest'}`; }
+function getResetKey() { return `mcReset_${currentChef?.name||'guest'}`; }
+function nextFirst(){ const d=new Date(); return new Date(d.getFullYear(),d.getMonth()+1,1).toISOString(); }
+
+function checkReset(){
+  const resetAt = localStorage.getItem(getResetKey()) || nextFirst();
+  if (new Date() >= new Date(resetAt)){ localStorage.setItem(getUsageKey(),'0'); localStorage.setItem(getResetKey(),nextFirst()); }
+  refreshUsage();
+}
+function getUsed(){ return parseInt(localStorage.getItem(getUsageKey())||'0'); }
+function addUsed(mins){ const u=getUsed()+mins; localStorage.setItem(getUsageKey(),u.toString()); refreshUsage(); return u; }
+
+function refreshUsage(){
+  const used=getUsed(), pct=Math.min((used/MONTHLY_LIMIT_MINS)*100,100);
+  const rem=Math.max(MONTHLY_LIMIT_MINS-used,0);
+  const resetAt=localStorage.getItem(getResetKey())||nextFirst();
+  const days=Math.ceil((new Date(resetAt)-new Date())/86400000);
+  const hUsed=(used/60).toFixed(1), hRem=(rem/60).toFixed(1);
+
+  const tp=document.getElementById('tpill');
+  if(tp){tp.textContent=`${hUsed} / 15 hrs`;tp.className='pill tpill'+(pct>80?' warn':'');}
+  ['ubFill','ufill'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.width=pct+'%';el.className=(id==='ubFill'?'ub-fill':'ufill')+(pct>80?' hot':'');}});
+  ['ubStat','unum'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=`${hUsed} / 15 hrs used`;});
+  ['ubReset','unote'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=`Resets in ${days} day${days!==1?'s':''} · ${hRem} hrs left`;});
+}
+
+// ═══════════════════════════════════════════════
+// SUPABASE
+// ═══════════════════════════════════════════════
+async function sbFetch(path,opts={}){
+  const res=await fetch(`${SB_URL}/rest/v1/${path}`,{
+    headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,...(opts.headers||{})},
+    ...opts
+  });
+  if(!res.ok){const e=await res.json();throw new Error(e.message||'Supabase error');}
+  return res.status===204?null:res.json();
+}
+
+async function loadRecipes(){
+  if(!sbOK){seedAll();return;}
+  try{
+    const data=await sbFetch('recipes?order=created_at.desc&select=*');
+    recipes=(data||[]).map(r=>({
+      id:r.id,name:r.name,nameES:r.name_es||r.name,protein:r.protein,costTarget:r.cost_target,
+      status:r.status,menuPrice:r.menu_price||35,total:r.total_cost||0,perPortion:r.per_portion||0,
+      actualPct:r.cost_pct||0,scale:100,ings:r.ingredients||[],method:r.method||[],
+      methodES:r.method_es||[],plating:r.plating||'',platingES:r.plating_es||'',
+      chef:r.chef_name||'',pushed:true,cookLog:r.cook_log||null,createdAt:r.created_at
+    }));
+    idx=0;filterRecipes();updateCount();
+  }catch(e){showToast('Offline mode — Supabase not connected','error');seedAll();}
+}
+
+async function pushToSupabase(r,cookData){
+  if(!sbOK){showToast('Add Supabase credentials to go live','error');return false;}
+  const payload={
+    id:r.id,name:r.name,name_es:r.nameES,protein:r.protein,cost_target:r.costTarget,
+    status:r.status,menu_price:r.menuPrice,total_cost:r.total,per_portion:r.perPortion,
+    cost_pct:r.actualPct,ingredients:r.ings,method:r.method,method_es:r.methodES,
+    plating:r.plating,plating_es:r.platingES,chef_name:currentChef?.name||'Unknown',
+    created_at:r.createdAt||new Date().toISOString(),cook_log:cookData||r.cookLog||null
+  };
+  try{
+    await sbFetch('recipes',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates'},body:JSON.stringify(payload)});
+    return true;
+  }catch(e){showToast('Push failed: '+e.message,'error');return false;}
+}
+
+// ═══════════════════════════════════════════════
+// HAIKU API
+// ═══════════════════════════════════════════════
+async function callHaiku(name,prot,notes,ings){
+  if(!HAIKU_KEY||HAIKU_KEY==='YOUR_ANTHROPIC_KEY_HERE'){showToast('Add your Anthropic API key in config','error');return null;}
+  const ingList=ings.length?ings.map(i=>`${i.name} (${i.qty} ${i.unit})`).join(', '):'auto';
+  const prompt=`You are a professional restaurant chef. Create a complete recipe for "${name}" using ${prot} as the main protein.${notes?' Notes: '+notes:''}
+Ingredients: ${ingList}.
+
+Respond ONLY with valid JSON (no markdown):
+{
+  "method":["step 1","step 2","step 3","step 4","step 5","step 6"],
+  "methodES":["paso 1","paso 2","paso 3","paso 4","paso 5","paso 6"],
+  "nameES":"dish name in Spanish",
+  "plating":"brief English plating note",
+  "platingES":"brief Spanish plating note"
+}`;
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','x-api-key':HAIKU_KEY},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error');}
+  const d=await res.json();
+  const m=d.content[0].text.match(/\{[\s\S]*\}/);
+  return m?JSON.parse(m[0]):null;
+}
+
+// ═══════════════════════════════════════════════
+// INGREDIENT BUILDER
+// ═══════════════════════════════════════════════
+const costs={Beef:4.50,Chicken:1.75,Duck:2.85,Lamb:4.20,Pork:2.20,Salmon:3.50,'Sea Bass':4.80,Cod:3.20,Lobster:7.50,Scallops:5.20,Shrimp:3.00,Vegetarian:1.20};
+const protES={Beef:'Res',Chicken:'Pollo',Duck:'Pato',Lamb:'Cordero',Pork:'Cerdo',Salmon:'Salmón','Sea Bass':'Robalo',Cod:'Bacalao',Lobster:'Langosta',Scallops:'Vieiras',Shrimp:'Camarón',Vegetarian:'Vegetariano'};
+const BASE_INGS=[
+  {name:'Shallots, minced',qty:'4',unit:'oz',cost:0.85},
+  {name:'Garlic, crushed',qty:'1',unit:'oz',cost:0.35},
+  {name:'Fresh thyme',qty:'0.5',unit:'oz',cost:0.25},
+  {name:'Unsalted butter',qty:'4',unit:'oz',cost:1.60},
+  {name:'White wine',qty:'4',unit:'oz',cost:1.20},
+  {name:'Chicken stock',qty:'8',unit:'oz',cost:0.95},
+  {name:'Heavy cream',qty:'4',unit:'oz',cost:1.50},
+  {name:'Salt & white pepper',qty:'',unit:'TT',cost:0.10},
+];
+const UNITS=['oz','g','kg','lb','cup','tbsp','tsp','ml','l','TT','ea','bunch','clove','sprig'];
+
+function proteinChanged(){ const p=document.getElementById('fProt').value; if(p)buildIngRows(p); updatePreview(); }
+
+function buildIngRows(prot){
+  const rows=document.getElementById('ingRows'); rows.innerHTML='';
+  if(prot){ const pCost=parseFloat((60*(costs[prot]||3)).toFixed(2)); addIngRow({name:prot+' (main)',qty:'60',unit:'oz',cost:pCost.toFixed(2)}); }
+  BASE_INGS.forEach(i=>addIngRow(i));
+}
+
+function addIngRow(data={}){
+  const rows=document.getElementById('ingRows');
+  const id='ir_'+Date.now().toString(36)+'_'+Math.random().toString(36).substr(2,5);
+  const unitOpts=UNITS.map(u=>`<option ${u===(data.unit||'oz')?'selected':''}>${u}</option>`).join('');
+  const div=document.createElement('div'); div.className='ing-row'; div.id=id;
+  div.innerHTML=`
+    <input type="text" placeholder="Ingredient name" value="${data.name||''}" oninput="updatePreview()">
+    <input type="text" placeholder="Qty" value="${data.qty||''}" oninput="updatePreview()">
+    <select onchange="updatePreview()">${unitOpts}</select>
+    <input type="number" placeholder="Cost $" value="${data.cost||''}" step="0.01" min="0" oninput="calcIngTotal();updatePreview()">
+    <button class="ing-del" onclick="document.getElementById('${id}').remove();calcIngTotal();updatePreview()">×</button>`;
+  rows.appendChild(div); calcIngTotal();
+}
+
+function getIngRows(){
+  return Array.from(document.querySelectorAll('.ing-row')).map(row=>{
+    const inputs=row.querySelectorAll('input,select');
+    return{name:inputs[0].value.trim(),qty:inputs[1].value.trim(),unit:inputs[2].value,cost:parseFloat(inputs[3].value)||0};
+  }).filter(i=>i.name);
+}
+
+function calcIngTotal(){
+  const total=getIngRows().reduce((s,i)=>s+i.cost,0);
+  const el=document.getElementById('ingCostTotal'); if(el)el.textContent='$'+total.toFixed(2);
+  return total;
+}
+
+// ═══════════════════════════════════════════════
+// LIVE PREVIEW
+// ═══════════════════════════════════════════════
+function updatePreview(){
+  const name=document.getElementById('fName').value.trim();
+  const prot=document.getElementById('fProt').value;
+  const costTarget=parseFloat(document.getElementById('fCost').value)||28;
+  const portions=parseInt(document.getElementById('fPortions').value)||10;
+  const menuPrice=parseFloat(document.getElementById('fMenuPrice').value)||35;
+  const status=document.getElementById('fStatus').value||'draft';
+  if(!name&&!prot){
+    document.getElementById('livePreviewCard').innerHTML=`
+      <div class="paper-card" style="opacity:.5">
+        <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        <div class="cbody">
+          <div class="c-name" style="color:var(--ink3);font-size:32px;font-style:italic">Dish name will appear here…</div>
+          <div class="c-chips" style="margin-top:12px"><span class="chip chip-grey">Ingredients</span><span class="chip chip-grey">Status</span><span class="chip chip-grey">Protein</span></div>
+          <hr class="c-divider">
+          <div class="c-cost-row"><div><div class="c-total" style="color:var(--ink3)">$0.00</div><div class="c-portion" style="color:var(--ink3)">Cost calculates as you add ingredients</div></div><div class="c-pct" style="color:var(--ink3)">--%</div></div>
+        </div>
+      </div>`;
+    return;
+  }
+  const total=calcIngTotal(), perPortion=total/portions;
+  const actualPct=menuPrice>0?Math.round((perPortion/menuPrice)*100):0;
+  document.getElementById('livePreviewCard').innerHTML=buildCardHTML({
+    name:name||'—',nameES:name||'—',protein:prot,status,costTarget,total,perPortion,actualPct,menuPrice,
+    ings:getIngRows(),scale:100,pushed:false,cookLog:null,id:'preview'
+  },true);
+}
+
+function buildCardHTML(r,isPreview=false){
+  const cCls=r.actualPct<=r.costTarget?'pct-ok':'pct-warn';
+  const sCls={draft:'chip-grey',testing:'chip-amber',approved:'chip-dgrey',active:'chip-red'}[r.status]||'chip-grey';
+  return `
+    <div class="paper-card" style="${isPreview?'pointer-events:none;opacity:0.92;':''}">
+      <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+      <div class="cbody">
+        <div class="c-name">${r.name||'Recipe Name'}</div>
+        <div class="c-name-es">${r.nameES&&r.nameES!==r.name?r.nameES:'—'}</div>
+        <div class="c-chips">
+          <span class="chip chip-grey">${r.ings?.length||0} Ingredients</span>
+          <span class="chip ${sCls}">${(r.status||'draft').toUpperCase()}</span>
+          ${r.protein?`<span class="chip chip-grey">${r.protein}</span>`:''}
+          ${r.cookLog?`<span class="chip chip-log">✓ Cook Log</span>`:''}
+          ${r.chef?`<span class="chip chip-grey">👨‍🍳 ${r.chef}</span>`:''}
+        </div>
+        <hr class="c-divider">
+        <div class="c-cost-row">
+          <div>
+            <div class="c-total">$${(r.total||0).toFixed(2)}</div>
+            <div class="c-portion">$${(r.perPortion||0).toFixed(2)} per portion &nbsp;·&nbsp; Menu $${(r.menuPrice||35).toFixed(2)}</div>
+          </div>
+          <div class="c-pct ${cCls}">${r.actualPct||0}%</div>
+        </div>
+        ${!isPreview?`<button class="c-open" onclick="openR('${r.id}')">📖 Open Full Recipe</button>
+        <div class="card-actions">
+          <button class="push-btn ${r.pushed?'live':''}" onclick="event.stopPropagation();quickPush('${r.id}')" ${r.pushed?'disabled':''}>
+            ${r.pushed?'✓ Synced':'🚀 Push Live'}</button>
+          <button class="delete-btn" onclick="event.stopPropagation();deleteRecipe('${r.id}')">🗑 Delete</button>
+        </div>`:''}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// GENERATE
+// ═══════════════════════════════════════════════
+async function generate(){
+  const name=document.getElementById('fName').value.trim();
+  const prot=document.getElementById('fProt').value;
+  const costTarget=parseFloat(document.getElementById('fCost').value)||28;
+  const portions=parseInt(document.getElementById('fPortions').value)||10;
+  const menuPrice=parseFloat(document.getElementById('fMenuPrice').value)||35;
+  const notes=(document.getElementById('fTechnique').value.trim()+' '+document.getElementById('fNotes').value.trim()).trim();
+  const status=document.getElementById('fStatus').value;
+  if(!name||!prot){showToast('Enter dish name and protein first','error');return;}
+  if(getUsed()>=MONTHLY_LIMIT_MINS){showToast('Monthly AI limit reached. Resets 1st of month.','error');return;}
+
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true; btn.textContent='⚡ Generating & Translating…';
+
+  try{
+    const ings=getIngRows();
+    const ai=await callHaiku(name,prot,notes,ings);
+    if(!ai){btn.disabled=false;btn.textContent='⚡ Generate Full Recipe with Haiku — Auto-translates to Spanish';return;}
+
+    const total=ings.reduce((s,i)=>s+i.cost,0);
+    const perPortion=total/portions;
+    const actualPct=menuPrice>0?Math.round((perPortion/menuPrice)*100):0;
+
+    const r={
+      id:'r_'+Date.now().toString(36)+'_'+Math.random().toString(36).substr(2,6),
+      name,nameES:ai.nameES||name,protein:prot,costTarget,status,menuPrice,
+      total,perPortion,actualPct,ings,scale:100,pushed:false,cookLog:null,
+      chef:currentChef?.name||'',
+      method:ai.method||defM(prot),methodES:ai.methodES||defMES(prot),
+      plating:ai.plating||'Protein at 7. Sauce at base. Garnish at 12.',
+      platingES:ai.platingES||'Proteína a las 7. Salsa en la base.',
+      createdAt:new Date().toISOString()
+    };
+
+    addUsed(2);
+    recipes.unshift(r); idx=0;
+    filterRecipes(); updateCount();
+    if(sbOK){pushToSupabase(r).then(ok=>{if(ok){r.pushed=true;filterRecipes();}});}
+    resetForm();
+    document.getElementById('createForm').classList.remove('open');
+    showToast('✓ Recipe generated'+(r.nameES!==r.name?` · ES: ${r.nameES}`:''),'success');
+  }catch(e){console.error(e);showToast('Error: '+e.message,'error');}
+
+  btn.disabled=false; btn.textContent='⚡ Generate Full Recipe with Haiku — Auto-translates to Spanish';
+}
+
+async function saveDraft(){
+  const name=document.getElementById('fName').value.trim();
+  const prot=document.getElementById('fProt').value;
+  if(!name){showToast('Enter a dish name first','error');return;}
+  const portions=parseInt(document.getElementById('fPortions').value)||10;
+  const menuPrice=parseFloat(document.getElementById('fMenuPrice').value)||35;
+  const costTarget=parseFloat(document.getElementById('fCost').value)||28;
+  const ings=getIngRows();
+  const total=ings.reduce((s,i)=>s+i.cost,0);
+  const perPortion=total/portions;
+  const actualPct=menuPrice>0?Math.round((perPortion/menuPrice)*100):0;
+  const r={
+    id:'r_'+Date.now().toString(36)+'_'+Math.random().toString(36).substr(2,6),
+    name,nameES:name,protein:prot,costTarget,status:'draft',menuPrice,total,perPortion,actualPct,
+    ings,scale:100,pushed:false,cookLog:null,chef:currentChef?.name||'',
+    method:defM(prot||'protein'),methodES:defMES(prot||'protein'),
+    plating:'Plating notes pending.',platingES:'Notas de emplatado pendientes.',
+    createdAt:new Date().toISOString()
+  };
+  recipes.unshift(r); idx=0; filterRecipes(); updateCount();
+  if(sbOK){pushToSupabase(r).then(ok=>{if(ok){r.pushed=true;filterRecipes();}});}
+  resetForm();
+  document.getElementById('createForm').classList.remove('open');
+  showToast('Draft saved','success');
+}
+
+function resetForm(){
+  ['fName','fNotes','fTechnique'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['fProt','fStatus'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.id==='fStatus'?'draft':'';});
+  document.getElementById('fCost').value='';
+  document.getElementById('fPortions').value='10';
+  document.getElementById('fMenuPrice').value='';
+  document.getElementById('ingRows').innerHTML='';
+  calcIngTotal();
+}
+
+function defM(p){return[`Season ${p} with salt and pepper.`,`Heat pan over high with clarified butter until smoking.`,`Sear presentation side 3 min — do not move.`,`Flip, reduce heat, finish to correct temp.`,`Rest 5 min.`,`Sauce: sweat shallots, deglaze wine, stock, mount butter, strain.`];}
+function defMES(p){const pe=protES[p]||p;return[`Sazone el ${pe} con sal y pimienta.`,`Sartén a fuego alto con mantequilla.`,`Selle 3 min — no mover.`,`Voltee y termine a temperatura.`,`Repose 5 min.`,`Salsa: echalotes, deglase, caldo, mantequilla fría, cuele.`];}
+
+// ═══════════════════════════════════════════════
+// CAROUSEL & FILTERING
+// ═══════════════════════════════════════════════
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  filterRecipes();
+}
+
+function filterRecipes(){
+  const q=(document.getElementById('fsearch')?.value||'').toLowerCase();
+  filteredRecipes=recipes.filter(r=>{
+    const matchStatus=activeFilter==='all'||r.status===activeFilter;
+    const matchSearch=!q||r.name.toLowerCase().includes(q)||(r.protein||'').toLowerCase().includes(q);
+    return matchStatus&&matchSearch;
+  });
+  if(idx>=filteredRecipes.length)idx=0;
+  renderCarousel();
+}
+
+function renderCarousel(){
+  const el=document.getElementById('carousel');
+  if(!filteredRecipes.length){
+    el.innerHTML=`<div class="empty"><h2>No recipes yet</h2><p>Click "+ New Recipe" to begin</p></div>`;
+    return;
+  }
+  if(idx>=filteredRecipes.length)idx=filteredRecipes.length-1;
+  const r=filteredRecipes[idx],n=filteredRecipes.length;
+  const dots=n<=30?filteredRecipes.map((_,i)=>`<div class="dot ${i===idx?'on':''}" onclick="goTo(${i})"></div>`).join(''):'';
+  el.innerHTML=`
+    <div class="nav-row">
+      <button class="arr" onclick="prev()" ${idx===0?'disabled':''}>‹</button>
+      <div class="nav-mid">
+        <div class="nav-count">${idx+1} of ${n}</div>
+        ${dots?`<div class="dots">${dots}</div>`:''}
+      </div>
+      <button class="arr" onclick="next()" ${idx===n-1?'disabled':''}>›</button>
+    </div>
+    ${buildCardHTML(r)}`;
+}
+
+function prev(){if(idx>0){idx--;renderCarousel();}}
+function next(){if(idx<filteredRecipes.length-1){idx++;renderCarousel();}}
+function goTo(i){idx=i;renderCarousel();}
+function updateCount(){const c=recipes.length;var _el_recipeCount=document.getElementById('recipeCount');if(_el_recipeCount)_el_recipeCount.textContent=c+' Recipe'+(c!==1?'s':'');}
+
+async function quickPush(id){
+  const r=recipes.find(r=>r.id===id);if(!r)return;
+  if(!confirm(`Push "${r.name}" live to Supabase?`))return;
+  const ok=await pushToSupabase(r);
+  if(ok){r.pushed=true;filterRecipes();showToast('✓ Pushed to Supabase','success');}
+}
+
+function deleteRecipe(id){
+  if(!confirm('Delete this recipe?'))return;
+  recipes=recipes.filter(r=>r.id!==id);
+  filterRecipes();updateCount();
+  if(sbOK){sbFetch(`recipes?id=eq.${id}`,{method:'DELETE'}).catch(()=>{});}
+  showToast('Recipe deleted');
+}
+
+// ═══════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════
+function openR(id){
+  const r=recipes.find(r=>r.id===id);if(!r)return;
+  modalLang='en'; renderModal(r);
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function renderModal(r){
+  const s=r.scale||100;
+  const cCls=r.actualPct<=r.costTarget?'pct-ok':'pct-warn';
+  const sCls={draft:'chip-grey',testing:'chip-amber',approved:'chip-dgrey',active:'chip-red'}[r.status]||'chip-grey';
+  const cl=r.cookLog||{};
+  const L=modalLang;
+
+  document.getElementById('mbody').innerHTML=`
+    <div class="rp-head">
+      <div class="rp-name">${r.name}</div>
+      <div class="rp-name-es">${r.nameES&&r.nameES!==r.name?r.nameES:''}</div>
+      <div class="rp-chips">
+        <span class="chip chip-grey">${r.ings?.length||0} Ingredients</span>
+        <span class="chip chip-grey">Prep 40 min</span>
+        <span class="chip ${sCls}">${r.status.toUpperCase()}</span>
+        ${r.chef?`<span class="chip chip-grey">👨‍🍳 ${r.chef}</span>`:''}
+      </div>
+    </div>
+
+    <div class="lang-toggle-row">
+      <span class="lang-toggle-lbl">Language:</span>
+      <button class="ltbtn ${L==='en'?'on':''}" onclick="setModalLang('${r.id}','en')">English</button>
+      <button class="ltbtn ${L==='es'?'on':''}" onclick="setModalLang('${r.id}','es')">Español</button>
+    </div>
+
+    <div class="cost-bar">
+      <div>
+        <div class="cost-big" id="mT">$${(r.total*s/100).toFixed(2)}</div>
+        <div class="scale-row">
+          <span class="slbl">Scale:</span>
+          ${[50,75,100,125,150].map(p=>`<button class="sbtn ${s===p?'on':''}" onclick="scaleIt('${r.id}',${p},this)">${p}%</button>`).join('')}
+        </div>
+      </div>
+      <div class="cost-meta">
+        <div class="cm"><span class="cm-lbl">Per Portion</span><span class="cm-val" id="mPP">$${(r.perPortion*s/100).toFixed(2)}</span></div>
+        <div class="cm"><span class="cm-lbl">Menu Price</span><span class="cm-val">$${r.menuPrice.toFixed(2)}</span></div>
+        <div class="cm"><span class="cm-lbl">Cost %</span><span class="cm-val ${cCls}">${r.actualPct}%</span></div>
+        <div class="cm"><span class="cm-lbl">Target %</span><span class="cm-val">${r.costTarget}%</span></div>
+      </div>
+    </div>
+
+    <div class="sh">${L==='es'?'Ingredientes':'Ingredients'}</div>
+    <table class="ing-table" id="mIngs">
+      ${(r.ings||[]).map((ing,i)=>`<tr data-idx="${i}" data-cost="${ing.cost}">
+        <td class="td-name">${ing.name}</td>
+        <td class="td-qty">${ing.qty?(parseFloat(ing.qty)*s/100).toFixed(1)+' '+ing.unit:ing.unit}</td>
+        <td class="td-cost">$${(ing.cost*s/100).toFixed(2)}</td></tr>`).join('')}
+      <tr class="ing-total-row">
+        <td>${L==='es'?'Costo Total':'Total Cost'}</td><td></td>
+        <td class="td-cost" id="mIT">$${(r.total*s/100).toFixed(2)}</td>
+      </tr>
+    </table>
+
+    <div class="sh">${L==='es'?'Método':'Method'}</div>
+    <div class="steps">
+      ${((L==='es'?r.methodES:r.method)||[]).map((step,i)=>`
+        <div class="step"><div class="snum">${i+1}.</div><div class="stxt">${step}</div></div>`).join('')}
+    </div>
+
+    <div class="sh">${L==='es'?'Emplatado':'Plating'}</div>
+    <div class="plating">
+      <div class="plating-line">${L==='es'?(r.platingES||r.plating):r.plating}</div>
+    </div>
+
+    <div class="cook-log">
+      <div class="cl-head">⚖ Cook Production Log</div>
+      <div class="cl-sub">Enter raw + finished weights to auto-calculate yield and waste.</div>
+      <div class="cgrid">
+        <div class="ck"><label class="ck-lbl">Raw Weight (oz)</label>
+          <input class="ck-inp" type="number" id="ckR" placeholder="—" value="${cl.raw||''}" oninput="calcLog('${r.id}')" min="1"></div>
+        <div class="ck"><label class="ck-lbl">Finished Weight (oz)</label>
+          <input class="ck-inp" type="number" id="ckF" placeholder="—" value="${cl.finished||''}" oninput="calcLog('${r.id}')" min="1"></div>
+        <div class="ck"><label class="ck-lbl">Portions Produced</label>
+          <input class="ck-inp" type="number" id="ckP" placeholder="10" value="${cl.portions||''}" oninput="calcLog('${r.id}')" min="1"></div>
+      </div>
+      <div class="ccalcs">
+        <div class="cc"><span class="cc-lbl">Yield %</span><span class="cc-val" id="ckY" style="color:var(--deepgreen-light)">${cl.yieldPct?cl.yieldPct+'%':'—'}</span></div>
+        <div class="cc"><span class="cc-lbl">Waste %</span><span class="cc-val" id="ckW" style="color:var(--red)">${cl.wastePct?cl.wastePct+'%':'—'}</span></div>
+        <div class="cc"><span class="cc-lbl">Loss (oz)</span><span class="cc-val" id="ckL" style="color:var(--red)">${cl.lossOz!==undefined?cl.lossOz+' oz':'—'}</span></div>
+        <div class="cc"><span class="cc-lbl">oz / Portion</span><span class="cc-val" id="ckPP">${cl.ozPP?cl.ozPP+' oz':'—'}</span></div>
+      </div>
+      <button class="plive ${r.pushed?'done':''}" onclick="submitLog('${r.id}')" ${r.pushed?'disabled':''}>
+        ${r.pushed?'✓ Already Synced to Supabase':'🚀 Push Recipe + Cook Data to Supabase'}</button>
+    </div>
+
+    <div class="mfooter">
+      <button class="mbtn mbtn-save" onclick="saveStatusChange('${r.id}')">💾 Save Changes</button>
+      <button class="mbtn mbtn-print" onclick="window.print()">🖨 Print</button>
+    </div>`;
+}
+
+function setModalLang(id,lang){modalLang=lang;const r=recipes.find(r=>r.id===id);if(r)renderModal(r);}
+
+function calcLog(id){
+  const raw=parseFloat(document.getElementById('ckR').value)||0;
+  const fin=parseFloat(document.getElementById('ckF').value)||0;
+  const por=parseFloat(document.getElementById('ckP').value)||10;
+  if(raw>0&&fin>0&&fin<=raw){
+    const loss=+(raw-fin).toFixed(2),yP=+((fin/raw)*100).toFixed(1),wP=+((loss/raw)*100).toFixed(1),ozPP=+(fin/por).toFixed(2);
+    var _el_ckY=document.getElementById('ckY');if(_el_ckY)_el_ckY.textContent=yP+'%';
+    var _el_ckW=document.getElementById('ckW');if(_el_ckW)_el_ckW.textContent=wP+'%';
+    var _el_ckL=document.getElementById('ckL');if(_el_ckL)_el_ckL.textContent=loss+' oz';
+    var _el_ckPP=document.getElementById('ckPP');if(_el_ckPP)_el_ckPP.textContent=ozPP+' oz';
+  }
+}
+
+async function submitLog(id){
+  const raw=parseFloat(document.getElementById('ckR').value);
+  const fin=parseFloat(document.getElementById('ckF').value);
+  const por=parseFloat(document.getElementById('ckP').value)||10;
+  if(!raw||!fin){showToast('Enter Raw and Finished weights','error');return;}
+  if(fin>raw){showToast('Finished cannot exceed raw','error');return;}
+  const r=recipes.find(r=>r.id===id);if(!r)return;
+  if(!confirm(`Push "${r.name}" + cook data to Supabase?`))return;
+  const loss=+(raw-fin).toFixed(2),yieldPct=+((fin/raw)*100).toFixed(1);
+  const wastePct=+((loss/raw)*100).toFixed(1),ozPP=+(fin/por).toFixed(2);
+  const cookData={raw,finished:fin,lossOz:loss,yieldPct,wastePct,portions:por,ozPP};
+  r.cookLog=cookData;
+  const ok=await pushToSupabase(r,cookData);
+  if(ok){r.pushed=true;filterRecipes();showToast('✓ Cook data synced','success');renderModal(r);}
+}
+
+function scaleIt(id,pct,btn){
+  const r=recipes.find(r=>r.id===id);if(!r)return;
+  r.scale=pct;
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  var _el_mT=document.getElementById('mT');if(_el_mT)_el_mT.textContent='$'+(r.total*pct/100).toFixed(2);
+  var _el_mPP=document.getElementById('mPP');if(_el_mPP)_el_mPP.textContent='$'+(r.perPortion*pct/100).toFixed(2);
+  var _el_mIT=document.getElementById('mIT');if(_el_mIT)_el_mIT.textContent='$'+(r.total*pct/100).toFixed(2);
+  document.querySelectorAll('#mIngs tr[data-idx]').forEach((row,i)=>{
+    const ing=r.ings[i];if(!ing)return;
+    const qty=parseFloat(ing.qty)||0;
+    row.querySelector('.td-qty').textContent=qty?(qty*pct/100).toFixed(1)+' '+ing.unit:ing.unit;
+    row.querySelector('.td-cost').textContent='$'+(ing.cost*pct/100).toFixed(2);
+  });
+}
+
+async function saveStatusChange(id){
+  const r=recipes.find(r=>r.id===id);if(!r)return;
+  if(sbOK){const ok=await pushToSupabase(r);if(ok)showToast('Changes saved','success');}
+  else showToast('Changes saved locally','success');
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
+function maybeClose(e){if(e.target.id==='overlay')closeModal();}
+function toggleForm(){document.getElementById('createForm').classList.toggle('open');}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ═══════════════════════════════════════════════
+// SEED RECIPES
+// ═══════════════════════════════════════════════
+const SEEDS=[
+  {name:'Duck Leg Confit',nameES:'Confit de Muslo de Pato',protein:'Duck',costTarget:29,status:'approved',method:['Salt-cure duck legs with thyme and garlic overnight.','Rinse, pat dry. Place skin-side down in deep pan.','Cover completely in rendered duck fat.','Cook at 200°F for 8 hours until very tender.','Cool in fat. Store up to 2 weeks refrigerated.','Sear skin-side in hot skillet until crispy golden.'],methodES:['Curar muslos con sal, tomillo y ajo toda la noche.','Enjuagar, secar, colocar boca abajo.','Cubrir en grasa de pato.','Cocinar a 93°C por 8 horas.','Enfriar en grasa.','Sellar piel hasta dorado crujiente.'],plating:'Crispy duck skin-up on wilted greens. Cherry jus pooled around. Potato rösti at 9.',platingES:'Pato crujiente sobre verduras. Salsa de cereza. Rösti a las 9.'},
+  {name:'Miso Glazed Black Cod',nameES:'Bacalao Negro al Miso',protein:'Cod',costTarget:31,status:'active',method:['Whisk white miso, sake, mirin, and sugar until smooth.','Marinate cod 48 hours refrigerated.','Remove, wipe excess, bring to room temperature.','Broil on high 6–8 min until caramelized.','Rest 2 min — flesh should flake at gentle pressure.','Finish with yuzu zest and micro shiso.'],methodES:['Mezclar miso, sake, mirin y azúcar.','Marinar bacalao 48 horas.','Retirar marinada, atemperar.','Asar 6–8 min hasta caramelizar.','Reposar 2 min.','Yuzu y micro shiso.'],plating:'Cod lacquered-side up on dashi gel. Pickled cucumber at 2 and 10.',platingES:'Bacalao sobre gel dashi. Pepino encurtido.'},
+  {name:'Herb Crusted Lamb Rack',nameES:'Rack de Cordero con Hierbas',protein:'Lamb',costTarget:32,status:'testing',method:['French the bones clean. Tie with butchers twine.','Season aggressively. Sear all sides in smoking oil.','Cool completely. Brush with Dijon mustard.','Press herb crust firmly onto fat cap.','Roast 400°F 18–22 min to 130°F internal.','Rest 8 min. Slice — 2 chops per portion.'],methodES:['Limpiar huesos y bridar.','Sazonar. Sellar todos los lados.','Enfriar. Pintar con Dijon.','Presionar costra de hierbas.','Asar 200°C 18–22 min a 54°C.','Reposar 8 min. 2 chuletas por porción.'],plating:'Two chops crossed, bones up. Mint jus pooled. Flageolet beans at 6.',platingES:'Chuletas cruzadas. Salsa de menta. Alubias a las 6.'},
+  {name:'Pan-Seared Salmon',nameES:'Salmón Sellado a la Sartén',protein:'Salmon',costTarget:27,status:'active',method:['Score skin 3 times. Season both sides.','Heat cast iron to smoking, add oil.','Skin-side down. Press flat 30 seconds.','4 min skin side. Flip, 90 seconds.','Baste with brown butter, garlic, thyme.','Rest skin-up 2 min.'],methodES:['Marcar piel 3 veces. Sazonar.','Sartén de hierro hasta humear.','Piel abajo. Presionar 30 seg.','4 min. Voltear, 90 seg.','Bañar con mantequilla dorada.','Reposar piel arriba.'],plating:'Salmon skin-up on cauliflower purée. Beurre blanc tableside.',platingES:'Salmón sobre puré de coliflor. Beurre blanc al servir.'},
+  {name:'Beef Tenderloin Rossini',nameES:'Filete de Res Rossini',protein:'Beef',costTarget:33,status:'draft',method:['Portion tenderloin 6oz medallions, tie to shape.','Sear in clarified butter 2 min per side.','Sear foie gras 45 sec per side in dry pan.','Toast brioche rounds in pan drippings.','Stack: brioche, beef, foie on warm plate.','Madeira truffle demi-glace. Fleur de sel.'],methodES:['Medallones de 180g. Bridar.','Sellar en mantequilla 2 min.','Foie gras 45 seg por lado.','Tostar brioche en los jugos.','Apilar: brioche, res, foie.','Madeira y trufa. Fleur de sel.'],plating:'Rossini tower center. Madeira jus over. Truffle shaved tableside.',platingES:'Torre Rossini al centro. Trufa al momento.'},
+];
+
+function buildR(d){
+  const portions=10,menuPrice=d.menuPrice||35;
+  const baseIngs=d.ings||[{name:d.protein+' (main)',qty:'60',unit:'oz',cost:parseFloat((60*(costs[d.protein]||3)).toFixed(2))},...BASE_INGS];
+  const total=baseIngs.reduce((s,i)=>s+i.cost,0),perPortion=total/portions;
+  const actualPct=Math.round((perPortion/menuPrice)*100);
+  return{...d,id:d.id||'seed_'+Math.random().toString(36).substr(2,9),ings:baseIngs,total,perPortion,actualPct,menuPrice,scale:100,pushed:false,cookLog:null,chef:d.chef||'Demo Chef'};
+}
+
+function seedAll(){SEEDS.forEach(s=>recipes.push(buildR(s)));filterRecipes();updateCount();}
+</script>
+
+<!-- HAIKU CHEF ASSISTANT -->
+<div class="chat-bar" id="chatBar">
+  <div class="chat-bar-header" onclick="toggleChat()">
+    <span style="font-size:20px">👨‍🍳</span>
+    <div>
+      <div class="chat-title">Mourning Cup · Haiku Chef Assistant <span class="chat-dot"></span></div>
+      <div class="chat-sub">Ask about techniques, pairings, plating, food cost…</div>
+    </div>
+    <span class="chat-toggle" id="chatToggleLbl">▲ Open</span>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg ai"><strong>Haiku Chef Assistant</strong>Good morning. I know your recipe book. Ask me about techniques, pairings, substitutions, plating, or food cost — anything kitchen related. What do you need?</div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" type="text" placeholder="Ask your chef assistant…" onkeydown="if(event.key==='Enter')sendChat()" maxlength="500">
+      <button class="chat-send" id="chatSend" onclick="sendChat()">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let chatOpen=false, chatHistory=[];
+
+function toggleChat(){
+  chatOpen=!chatOpen;
+  document.getElementById('chatBody').classList.toggle('open',chatOpen);
+  document.getElementById('chatToggleLbl').textContent=chatOpen?'▼ Close':'▲ Open';
+  if(chatOpen){setTimeout(()=>document.getElementById('chatInput').focus(),100);scrollChat();}
+}
+
+function scrollChat(){const el=document.getElementById('chatMessages');if(el)el.scrollTop=el.scrollHeight;}
+
+function addMsg(text,role){
+  const el=document.getElementById('chatMessages');
+  const div=document.createElement('div'); div.className='msg '+role;
+  if(role==='ai')div.innerHTML=`<strong>Haiku Chef Assistant</strong>${text}`;
+  else div.textContent=text;
+  el.appendChild(div); scrollChat(); return div;
+}
+
+async function sendChat(){
+  const input=document.getElementById('chatInput');
+  const send=document.getElementById('chatSend');
+  const msg=input.value.trim(); if(!msg)return;
+  if(!HAIKU_KEY||HAIKU_KEY==='YOUR_ANTHROPIC_KEY_HERE'){addMsg('Add your Anthropic API key in config to enable me.','ai');return;}
+
+  input.value=''; send.disabled=true;
+  addMsg(msg,'user');
+  const thinking=addMsg('Thinking…','ai thinking');
+
+  const recipeContext=recipes.slice(0,10).map(r=>`${r.name} (${r.protein}, ${r.status})`).join(', ');
+  const systemPrompt=`You are a professional chef assistant for Mourning Cup of Coffee restaurant. Deep knowledge of culinary techniques, flavor pairings, plating, food cost, and kitchen operations. Be concise and direct — speak like an experienced chef. Current recipe book: ${recipeContext||'no recipes yet'}.`;
+
+  chatHistory.push({role:'user',content:msg});
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','x-api-key':HAIKU_KEY},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:systemPrompt,messages:chatHistory})
+    });
+    const d=await res.json();
+    const reply=d.content[0].text;
+    chatHistory.push({role:'assistant',content:reply});
+    thinking.className='msg ai';
+    thinking.innerHTML=`<strong>Haiku Chef Assistant</strong>${reply}`;
+  }catch(e){
+    thinking.className='msg ai';
+    thinking.innerHTML=`<strong>Haiku Chef Assistant</strong>Something went wrong. Try again.`;
+  }
+  send.disabled=false; scrollChat();
+  if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);
+}
+
+document.getElementById('appMain').style.paddingBottom='120px';
+</script>
+</body>
+</html>
