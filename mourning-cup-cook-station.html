@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mourning Cup of Coffee · Cook Station</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f5f0e8;--paper2:#ede8de;--paper3:#e0dbd0;
+  --ink:#1a1510;--ink2:#3a3020;--ink3:#6a6050;--ink4:#9a9080;
+  --rule:#c8c0b0;--rule2:#b0a890;
+  --deepgreen:#0d3322;--deepgreen-light:#1a5c30;--maroon:#60071D;
+  --red:#8b2020;--spine:#1e1c16;--amber:#c8800a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000e08;font-family:'IBM Plex Mono',monospace;min-height:100vh;padding-bottom:40px}
+
+/* ── HEADER ── */
+header{
+  background:linear-gradient(180deg,var(--deepgreen) 0%,#001a10 100%);
+  border-bottom:5px solid var(--maroon);padding:22px 40px;display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:200;box-shadow:0 4px 30px rgba(0,0,0,.8);
+  gap:16px;flex-wrap:wrap;position:relative;overflow:hidden;
+}
+header::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08) 0%,transparent 50%);pointer-events:none}
+.brand-name{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--deepgreen-light);letter-spacing:6px;text-transform:uppercase}
+.brand-sub{font-size:12px;color:#E4CDCF;letter-spacing:4px;text-transform:uppercase;margin-top:4px}
+.hright{display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:relative;z-index:1}
+.live-clock{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--deepgreen-light);letter-spacing:2px;line-height:1}
+.clock-sub{font-size:10px;color:var(--ink4);letter-spacing:3px;text-transform:uppercase;margin-top:2px;text-align:right}
+.pill{font-size:13px;font-weight:700;padding:8px 16px;border-radius:2px;border:2px solid var(--maroon);color:#E4CDCF;background:var(--maroon);cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:all .2s;font-family:inherit;text-decoration:none;display:inline-block}
+.pill:hover{background:#80091F;color:#fff}
+.pill.outline{background:transparent;border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+.pill.outline:hover{background:var(--deepgreen-light);color:#fff}
+
+/* ── NAV TABS ── */
+.nav-bar{display:flex;border-bottom:2px solid var(--maroon);border-top:3px solid var(--deepgreen-light);background:var(--paper2)}
+.nav-tab{padding:12px 24px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;cursor:pointer;border:none;background:transparent;color:var(--ink3);font-family:inherit;transition:all .15s;position:relative}
+.nav-tab:hover{color:var(--ink)}
+.nav-tab.active{color:var(--ink);background:var(--paper)}
+.nav-tab.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:3px;background:var(--deepgreen-light)}
+
+/* ── LAYERS ── */
+.layer{display:none}.layer.visible{display:block}
+.main{max-width:900px;margin:32px auto;padding:0 20px 60px}
+
+/* ── PAPER CARD (recipe) ── */
+.paper-card{
+  background:var(--paper);border-radius:2px;
+  box-shadow:2px 3px 0 var(--paper3),4px 6px 0 #ccc8b4,0 20px 60px rgba(0,0,0,.55);
+  position:relative;overflow:hidden;
+}
+.paper-card::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,transparent 0px,transparent 31px,rgba(180,155,110,.13) 31px,rgba(180,155,110,.13) 32px);pointer-events:none;z-index:0}
+.paper-card::before{content:'';position:absolute;left:68px;top:0;bottom:0;width:2px;background:rgba(96,7,29,.15);z-index:1}
+.holes{position:absolute;left:12px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-around;padding:80px 0;z-index:2;pointer-events:none}
+.hole{width:28px;height:28px;border-radius:50%;background:#000e08;box-shadow:inset 0 2px 4px rgba(0,0,0,.5)}
+.card-body{position:relative;z-index:3;padding:36px 44px 44px 90px}
+
+/* ── RECIPE HEADER ── */
+.r-name{font-family:'Barlow Condensed',sans-serif;font-size:64px;font-weight:900;color:var(--ink);text-transform:uppercase;letter-spacing:1px;line-height:1;margin-bottom:4px}
+.r-name-es{font-family:'Special Elite',serif;font-size:22px;color:var(--ink3);font-style:italic;margin-bottom:16px}
+.r-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{font-size:12px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:2px;border:2px solid;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.chip-grey{border-color:var(--rule);color:var(--ink4)}
+.chip-green{border-color:var(--deepgreen-light);color:var(--deepgreen-light);background:rgba(26,92,48,.07)}
+.chip-red{border-color:var(--maroon);color:var(--maroon);background:rgba(96,7,29,.06)}
+.chip-amber{border-color:var(--amber);color:var(--amber)}
+.chip-fish{border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+
+/* ── SCALE BAR ── */
+.scale-bar{background:var(--paper2);border:2px solid var(--rule);border-radius:2px;padding:16px 20px;margin-bottom:24px}
+.scale-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.scale-title{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--maroon)}
+.scale-par-info{font-size:13px;color:var(--ink3)}
+.scale-par-info strong{color:var(--ink);font-weight:700}
+.scale-btns{display:flex;gap:6px;flex-wrap:wrap}
+.sbtn{background:transparent;border:2px solid var(--rule);color:var(--ink2);padding:8px 16px;border-radius:2px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:1px}
+.sbtn:hover{border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+.sbtn.on{background:var(--deepgreen-light);color:#fff;border-color:var(--deepgreen-light)}
+.sbtn.disabled-scale{opacity:.3;cursor:not-allowed}
+.scale-note{font-size:12px;color:var(--deepgreen-light);margin-top:8px;font-weight:700}
+
+/* ── SECTION HEADERS ── */
+.sh{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--maroon);margin:28px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+
+/* ── INGREDIENTS TABLE ── */
+.ing-table{width:100%;border-collapse:collapse;margin-bottom:28px}
+.ing-table tr{border-bottom:1px solid rgba(0,0,0,.08)}
+.ing-table tr:first-child{border-top:2px solid rgba(0,0,0,.15)}
+.ing-table td{padding:14px 0;vertical-align:middle}
+.td-name{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:var(--ink)}
+.td-qty{text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--maroon);white-space:nowrap;padding-left:20px}
+.ing-total-row td{border-top:3px solid var(--ink);padding-top:14px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--ink)}
+
+/* ── METHOD STEPS ── */
+.steps{margin-bottom:28px}
+.step{display:flex;gap:16px;margin-bottom:12px;padding:16px 20px;background:rgba(0,0,0,.025);border-left:5px solid var(--rule)}
+.snum{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--maroon);min-width:44px;flex-shrink:0;line-height:1.1}
+.stxt{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:600;line-height:1.35;color:var(--ink)}
+
+/* ── PLATING ── */
+.plating{background:rgba(26,92,48,.07);border-left:6px solid var(--deepgreen-light);padding:16px 20px;border-radius:2px;margin-bottom:28px}
+.plating-line{font-family:'Special Elite',serif;font-size:20px;color:var(--ink2);line-height:1.6}
+
+/* ── MARK PREPPED ── */
+.prepped-btn{width:100%;background:var(--deepgreen-light);border:none;color:#fff;padding:18px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-bottom:12px}
+.prepped-btn:hover{background:var(--deepgreen)}
+.prepped-btn.done{background:var(--ink4);cursor:default}
+
+/* ── LANG TOGGLE ── */
+.lang-row{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.lang-lbl{font-size:11px;color:var(--ink3);letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.ltbtn{font-size:12px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:2px;border:2px solid var(--rule);color:var(--ink3);background:transparent;cursor:pointer;transition:all .15s;text-transform:uppercase;font-family:inherit}
+.ltbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ── CAROUSEL ── */
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.arr{background:var(--spine);border:3px solid var(--deepgreen-light);color:var(--deepgreen-light);width:52px;height:52px;border-radius:50%;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.arr:hover{background:var(--deepgreen-light);color:#fff}
+.arr:disabled{opacity:.2;cursor:default}
+.nav-mid{text-align:center}
+.nav-count{font-size:14px;color:var(--ink4);letter-spacing:2px}
+.nav-dots{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;max-width:400px;margin-top:8px}
+.ndot{width:10px;height:10px;border-radius:50%;background:rgba(26,92,48,.2);cursor:pointer;transition:all .2s;flex-shrink:0}
+.ndot.on{background:var(--deepgreen-light);transform:scale(1.4)}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.fbtn{font-size:12px;font-weight:700;letter-spacing:1px;padding:7px 14px;border-radius:2px;border:2px solid rgba(26,92,48,.3);color:var(--ink4);background:transparent;cursor:pointer;transition:all .2s;text-transform:uppercase;font-family:inherit}
+.fbtn:hover{border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+.fbtn.on{background:var(--deepgreen-light);border-color:var(--deepgreen-light);color:#fff}
+.fsearch{flex:1;min-width:160px;background:var(--paper2);border:2px solid var(--rule);border-radius:2px;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s}
+.fsearch::placeholder{color:var(--ink4)}
+.fsearch:focus{border-color:var(--deepgreen-light)}
+
+/* ── PREP LIST ── */
+.prep-sheet{background:var(--paper);border-radius:2px;box-shadow:2px 3px 0 var(--paper3),0 20px 40px rgba(0,0,0,.4);overflow:hidden}
+.prep-add-bar{display:flex;border-bottom:2px solid var(--rule)}
+.prep-input{flex:1;background:transparent;border:none;padding:14px 18px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:600;color:var(--ink);outline:none}
+.prep-input::placeholder{color:var(--ink4);font-style:italic}
+.prep-add-btn{background:var(--deepgreen-light);border:none;color:#fff;padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:2px}
+.prep-add-btn:hover{background:var(--deepgreen)}
+.prep-items{max-height:420px;overflow-y:auto}
+.prep-items::-webkit-scrollbar{width:4px}
+.prep-items::-webkit-scrollbar-thumb{background:var(--deepgreen-light);border-radius:2px}
+.prep-item{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(0,0,0,.06);transition:all .2s}
+.prep-item:hover{background:rgba(0,0,0,.02)}
+.prep-item.done{opacity:.5}
+.prep-check{width:28px;height:28px;border-radius:2px;border:3px solid var(--deepgreen-light);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.prep-check.done{background:var(--deepgreen-light);border-color:var(--deepgreen-light)}
+.prep-check-inner{color:#fff;font-size:16px;font-weight:900;display:none}
+.prep-check.done .prep-check-inner{display:block}
+.prep-text{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:600;color:var(--ink);flex:1;line-height:1.2}
+.prep-item.done .prep-text{text-decoration:line-through;color:var(--ink4)}
+.prep-meta{font-size:11px;color:var(--ink4);text-align:right;white-space:nowrap;line-height:1.6}
+.prep-del{background:transparent;border:none;color:var(--rule);cursor:pointer;font-size:20px;padding:4px;transition:color .2s}
+.prep-del:hover{color:var(--red)}
+.prep-empty{text-align:center;padding:40px 20px;font-size:12px;color:var(--ink4);letter-spacing:2px;text-transform:uppercase}
+.prep-footer{padding:10px 20px;background:var(--paper2);border-top:2px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+.prep-progress{font-size:12px;color:var(--deepgreen-light);font-weight:700;letter-spacing:1px}
+.prep-clear{font-size:12px;color:var(--ink4);cursor:pointer;background:none;border:none;letter-spacing:1px;text-transform:uppercase;font-family:inherit}
+.prep-clear:hover{color:var(--red)}
+
+/* ── YIELD LOG ── */
+.yield-sheet{background:var(--paper);border-radius:2px;box-shadow:2px 3px 0 var(--paper3),0 20px 40px rgba(0,0,0,.4);padding:28px 32px}
+.yield-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.yield-field{display:flex;flex-direction:column;gap:6px}
+.yield-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)}
+.yield-input{background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:12px 14px;font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:700;color:var(--ink);outline:none;transition:border-color .2s;width:100%}
+.yield-input:focus{border-color:var(--deepgreen-light)}
+.yield-input.sm{font-size:16px;padding:10px 14px}
+.yield-input.green{border-color:rgba(26,92,48,.4);color:var(--deepgreen-light)}
+.yield-input.red{border-color:rgba(139,32,32,.4);color:var(--red)}
+.yield-results{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:rgba(0,0,0,.04);border-radius:2px;padding:14px;margin-bottom:16px}
+.yield-result{display:flex;flex-direction:column;gap:4px}
+.yield-result-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.yield-result-val{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--ink)}
+.yield-save-btn{width:100%;background:var(--deepgreen-light);border:none;color:#fff;padding:16px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.yield-save-btn:hover{background:var(--deepgreen)}
+
+/* ── TIMERS ── */
+.timer-wrap{background:var(--spine);border-radius:2px;padding:20px 24px;margin-bottom:24px;border:2px solid rgba(26,92,48,.3)}
+.timer-head{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--deepgreen-light);margin-bottom:14px}
+.timer-presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tpreset{font-size:12px;font-weight:700;padding:6px 12px;border-radius:2px;border:2px solid rgba(26,92,48,.3);color:rgba(255,255,255,.4);background:transparent;cursor:pointer;transition:all .2s;font-family:inherit}
+.tpreset:hover{border-color:var(--deepgreen-light);color:var(--deepgreen-light)}
+.timer-add-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.timer-name-inp{flex:1;min-width:120px;background:rgba(255,255,255,.06);border:2px solid rgba(26,92,48,.3);border-radius:2px;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:18px;color:#fff;outline:none}
+.timer-name-inp::placeholder{color:rgba(255,255,255,.2)}
+.timer-name-inp:focus{border-color:var(--deepgreen-light)}
+.timer-dur-inp{width:80px;background:rgba(255,255,255,.06);border:2px solid rgba(26,92,48,.3);border-radius:2px;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:18px;color:#fff;outline:none;text-align:center}
+.timer-dur-inp:focus{border-color:var(--deepgreen-light)}
+.timer-start-btn{background:var(--deepgreen-light);border:none;color:#fff;padding:10px 18px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.timer-start-btn:hover{background:var(--deepgreen)}
+.timers-list{display:flex;flex-direction:column;gap:8px}
+.timer-card{background:rgba(255,255,255,.04);border:2px solid rgba(26,92,48,.2);border-radius:2px;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.timer-card.running{border-color:var(--deepgreen-light)}
+.timer-card.done{border-color:var(--amber);animation:tdone 1s infinite}
+@keyframes tdone{0%,100%{border-color:var(--amber)}50%{border-color:rgba(200,128,10,.2)}}
+.timer-card-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;flex:1;min-width:80px}
+.timer-card-display{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:900;color:var(--deepgreen-light);line-height:1;min-width:110px;text-align:right}
+.timer-card.done .timer-card-display{color:var(--amber)}
+.timer-card-btns{display:flex;gap:6px}
+.tcbtn{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;border-radius:2px;cursor:pointer;border:none;transition:all .2s}
+.tcbtn.pause{background:var(--amber);color:#fff}
+.tcbtn.resume{background:var(--deepgreen-light);color:#fff}
+.tcbtn.stop{background:rgba(139,32,32,.2);color:#E4CDCF;border:2px solid rgba(139,32,32,.3)}
+.tcbtn.stop:hover{background:var(--red)}
+.timer-empty{font-size:12px;color:rgba(255,255,255,.2);letter-spacing:2px;text-transform:uppercase;text-align:center;padding:14px 0}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--spine);color:var(--paper);padding:12px 24px;border-radius:2px;font-size:13px;font-weight:700;letter-spacing:2px;border-left:5px solid var(--deepgreen-light);z-index:9999;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-left-color:var(--deepgreen-light)}
+.toast.error{border-left-color:var(--red)}
+
+/* ── CHAT BAR ── */
+.chat-bar{position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--deepgreen);border-top:3px solid var(--deepgreen-light);box-shadow:0 -4px 24px rgba(0,0,0,.6);font-family:'IBM Plex Mono',monospace}
+.chat-bar-header{display:flex;align-items:center;gap:12px;padding:10px 24px;cursor:pointer;user-select:none}
+.chat-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff}
+.chat-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase}
+.chat-toggle{margin-left:auto;font-size:12px;color:var(--deepgreen-light);letter-spacing:1px}
+.chat-dot{width:8px;height:8px;border-radius:50%;background:var(--deepgreen-light);margin-left:8px;display:inline-block;animation:glow-green 2s infinite}
+@keyframes glow-green{0%,100%{box-shadow:0 0 6px 3px var(--deepgreen-light)}50%{box-shadow:0 0 2px 1px var(--deepgreen-light)}}
+  50%{
+    box-shadow:0 0 0 4px rgba(122,10,42,.3),0 0 6px 3px rgba(122,10,42,.4),0 0 12px 5px rgba(122,10,42,.2);
+    transform:scale(0.9);
+  }
+}
+.chat-body{display:none;border-top:2px solid var(--deepgreen-light)}
+.chat-body.open{display:flex;flex-direction:column}
+.chat-messages{height:220px;overflow-y:auto;padding:14px 24px;background:#001a10;display:flex;flex-direction:column;gap:10px}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--deepgreen-light);border-radius:2px}
+.msg{max-width:80%;padding:10px 14px;border-radius:2px;font-size:14px;line-height:1.5}
+.msg.user{background:var(--deepgreen);color:#fff;align-self:flex-end;border:1px solid var(--deepgreen-light)}
+.msg.ai{background:rgba(26,92,48,.15);color:var(--paper);align-self:flex-start;border:1px solid rgba(26,92,48,.3)}
+.msg.ai strong{color:var(--deepgreen-light);font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:4px}
+.msg.thinking{opacity:.5;font-style:italic;font-size:12px}
+.chat-input-row{display:flex;border-top:2px solid var(--deepgreen-light);background:var(--deepgreen)}
+.chat-input{flex:1;background:transparent;border:none;padding:14px 20px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#fff;outline:none}
+.chat-input::placeholder{color:rgba(255,255,255,.3)}
+.chat-send{background:var(--deepgreen-light);border:none;color:#fff;padding:14px 24px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.chat-send:hover{background:#236b3a}
+.chat-send:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── FISH LOCK ── */
+.fish-lock{background:rgba(26,92,48,.08);border:2px solid var(--deepgreen-light);border-radius:2px;padding:20px 24px;margin-bottom:24px;text-align:center}
+.fish-lock-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--deepgreen-light);margin-bottom:6px}
+.fish-lock-sub{font-size:13px;color:var(--ink3);line-height:1.6}
+
+@media print{
+  body{background:white!important;padding-bottom:0}
+  header,.nav-bar,.toast,.chat-bar{display:none!important}
+  .main{margin:0!important;padding:0!important;max-width:100%!important}
+  .paper-card{box-shadow:none!important}.holes{display:none!important}.paper-card::before{display:none!important}
+  @page{margin:.5in;size:letter}
+}
+@media(max-width:600px){
+  .card-body{padding:24px 16px 32px 52px}
+  header{padding-left:16px;padding-right:16px}
+  .r-name{font-size:44px}
+  .yield-grid{grid-template-columns:1fr 1fr}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="brand-name">Mourning Cup of Coffee</div>
+    <div class="brand-sub">Cook Station · Built by a Chef for a Chef</div>
+  </div>
+  <div class="hright">
+    <div>
+      <div class="live-clock" id="liveClock">--:--</div>
+      <div class="clock-sub" id="clockDay">Kitchen Time</div>
+    </div>
+    <a href="mourning-cup-recipes.html" class="pill outline">👨‍🍳 Chef</a>
+    <button class="pill" onclick="window.print()">🖨️ Print</button>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<div class="nav-bar">
+  <button class="nav-tab active" onclick="showLayer('recipes',event)">Recipes</button>
+  <button class="nav-tab" onclick="showLayer('prep',event)">Prep List</button>
+  <button class="nav-tab" onclick="showLayer('schedule',event)">📅 Schedule</button>
+</div>
+
+<!-- RECIPES LAYER -->
+<div class="main layer visible" id="layer-recipes">
+  <div class="filter-bar">
+    <button class="fbtn on" onclick="setFilter('all',this)">All</button>
+    <button class="fbtn" onclick="setFilter('active',this)">Active — Tonight</button>
+    <input class="fsearch" type="text" id="fsearch" placeholder="Search recipes…" oninput="filterRecipes()">
+  </div>
+  <div id="carousel">
+    <div style="text-align:center;padding:60px;color:var(--ink4);font-size:13px;letter-spacing:3px;text-transform:uppercase">Loading recipes…</div>
+  </div>
+</div>
+
+<!-- PREP LIST LAYER -->
+<div class="main layer" id="layer-prep">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--paper);letter-spacing:4px;text-transform:uppercase">Prep List</div>
+    <span style="font-size:13px;color:var(--deepgreen-light);font-weight:700;letter-spacing:1px" id="prepCountLbl">0 / 0</span>
+  </div>
+  <div class="prep-sheet">
+    <div class="prep-add-bar">
+      <input class="prep-input" type="text" id="prepInput" placeholder="Add prep task…" onkeydown="if(event.key==='Enter')addPrepItem()" maxlength="80">
+      <button class="prep-add-btn" onclick="addPrepItem()">＋</button>
+    </div>
+    <div class="prep-items" id="prepItems">
+      <div class="prep-empty">No prep tasks yet — add one above</div>
+    </div>
+    <div class="prep-footer">
+      <span class="prep-progress" id="prepProgress">Ready to go</span>
+      <button class="prep-clear" onclick="clearDone()">Clear Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- YIELD LOG LAYER — hidden, logs come from recipe card -->
+<div class="main layer" id="layer-yield" style="display:none!important">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--paper);letter-spacing:4px;text-transform:uppercase;margin-bottom:6px">Yield Log</div>
+  <div style="font-size:12px;color:var(--ink4);letter-spacing:2px;margin-bottom:20px">Meat & Fish only — log raw weight, finished weight, portions produced</div>
+  <div class="yield-sheet">
+    <div class="yield-grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+      <div class="yield-field">
+        <label class="yield-label">Recipe / Item</label>
+        <select class="yield-input sm" id="yieldRecipe"><option value="">— Select —</option></select>
+      </div>
+      <div class="yield-field">
+        <label class="yield-label">Category</label>
+        <select class="yield-input sm" id="yieldCategory" onchange="updateYieldCategory()">
+          <option value="meat">🥩 Meat (15% waste std)</option>
+          <option value="fish">🐟 Fish (5% waste std — Chef only)</option>
+          <option value="sauce">🥣 Sauce / Prepared</option>
+          <option value="produce">🥗 Produce</option>
+        </select>
+      </div>
+    </div>
+    <div id="fishLockMsg" style="display:none" class="fish-lock">
+      <div class="fish-lock-title">🐟 Fish — Chef Only</div>
+      <div class="fish-lock-sub">Fish butchery and portioning is handled by the Chef.<br>Log is view-only. See your Chef for fish yield records.</div>
+    </div>
+    <div id="yieldFormBody">
+      <div style="font-size:12px;color:var(--ink4);letter-spacing:1px;margin-bottom:14px">Enter raw weight and portions — everything else calculates automatically</div>
+      <div class="yield-grid" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
+        <div class="yield-field">
+          <label class="yield-label">Raw Weight</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input class="yield-input" type="number" id="yieldRaw" placeholder="—" min="0" oninput="calcYield()" style="flex:1">
+            <select id="yieldRawUnit" onchange="calcYield()" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:8px 10px;font-size:14px;color:var(--ink);outline:none;flex-shrink:0">
+              <option value="oz">oz</option>
+              <option value="lbs">lbs</option>
+            </select>
+          </div>
+        </div>
+        <div class="yield-field">
+          <label class="yield-label">Portions Made</label>
+          <input class="yield-input" type="number" id="yieldPor" placeholder="—" min="1" oninput="calcYield()">
+        </div>
+      </div>
+
+      <!-- AUTO RESULTS -->
+      <div style="background:rgba(0,0,0,.04);border-radius:2px;padding:14px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--deepgreen-light);margin-bottom:10px" id="yieldAutoNote">Enter raw weight above — results auto-calculate</div>
+        <div class="yield-results">
+          <div class="yield-result"><span class="yield-result-lbl">Finished Wt</span><span class="yield-result-val" id="resFinished" style="color:var(--ink)">—</span></div>
+          <div class="yield-result"><span class="yield-result-lbl">Yield %</span><span class="yield-result-val" id="resYield" style="color:var(--deepgreen-light)">—</span></div>
+          <div class="yield-result"><span class="yield-result-lbl">Waste %</span><span class="yield-result-val" id="resWaste" style="color:var(--red)">—</span></div>
+          <div class="yield-result"><span class="yield-result-lbl">Loss</span><span class="yield-result-val" id="resLoss" style="color:var(--red)">—</span></div>
+          <div class="yield-result"><span class="yield-result-lbl">oz/Portion</span><span class="yield-result-val" id="resOzPP">—</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <div class="yield-field" style="flex:1">
+          <label class="yield-label">Notes</label>
+          <input class="yield-input sm" type="text" id="yieldNotes" placeholder="Any notes…">
+        </div>
+      </div>
+
+      <button class="yield-save-btn" onclick="saveYield()">💾 Save Yield Log</button>
+    </div>
+  </div>
+  <div style="margin-top:28px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--paper);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--maroon)">Today's Logs</div>
+    <div id="yieldHistory" style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:12px;color:var(--ink4);letter-spacing:2px;text-transform:uppercase;text-align:center;padding:20px">No yield logs yet today</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHEDULE LAYER -->
+<div class="main layer" id="layer-schedule">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;flex-wrap:wrap;gap:8px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--paper);letter-spacing:4px;text-transform:uppercase">Kitchen Schedule</div>
+    <span style="font-size:12px;color:var(--ink4);letter-spacing:2px;text-transform:uppercase">Read Only · Chef Updates</span>
+  </div>
+  <div style="font-size:13px;color:var(--deepgreen-light);font-weight:700;margin-bottom:20px;letter-spacing:1px;display:flex;align-items:center;gap:8px">
+    <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;animation:glow-red 1.4s ease-in-out infinite"></span>
+    <span id="schedLiveStatus">Checking for latest schedule…</span>
+  </div>
+  <div id="schedReadOnly">
+    <div style="text-align:center;padding:60px;color:var(--ink4);font-size:13px;letter-spacing:3px;text-transform:uppercase">No schedule pushed yet — Chef will push when ready</div>
+  </div>
+
+  <!-- TIME OFF REQUEST -->
+  <div style="margin-top:32px;border-top:3px double var(--rule2);padding-top:24px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--maroon);margin-bottom:6px">Request Time Off</div>
+    <div style="font-size:12px;color:var(--ink4);letter-spacing:2px;margin-bottom:16px">Goes to Chef & Manager — they will confirm</div>
+    <div style="background:var(--paper);border-radius:2px;box-shadow:2px 3px 0 var(--paper3);padding:24px 28px;margin-bottom:20px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,transparent 0px,transparent 31px,rgba(180,155,110,.13) 31px,rgba(180,155,110,.13) 32px);pointer-events:none;z-index:0"></div>
+      <div style="position:relative;z-index:1">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Your Name</label>
+            <input id="torName" type="text" placeholder="First Last" maxlength="40" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--ink);outline:none" onfocus="this.style.borderColor='var(--deepgreen-light)'" onblur="this.style.borderColor='var(--rule)'">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Type</label>
+            <select id="torType" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--ink);outline:none" onfocus="this.style.borderColor='var(--deepgreen-light)'" onblur="this.style.borderColor='var(--rule)'">
+              <option value="day_off">Day Off</option>
+              <option value="vacation">Vacation</option>
+              <option value="personal">Personal Day</option>
+              <option value="sick">Sick Day</option>
+              <option value="schedule_change">Schedule Change</option>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Date</label>
+            <input id="torDate" type="date" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--ink);outline:none" onfocus="this.style.borderColor='var(--deepgreen-light)'" onblur="this.style.borderColor='var(--rule)'">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Return Date (multi-day)</label>
+            <input id="torReturn" type="date" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--ink);outline:none" onfocus="this.style.borderColor='var(--deepgreen-light)'" onblur="this.style.borderColor='var(--rule)'">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1">
+            <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Note (optional)</label>
+            <textarea id="torNote" placeholder="Any details the Chef should know…" maxlength="200" rows="2" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--ink);outline:none;resize:none;line-height:1.5" onfocus="this.style.borderColor='var(--deepgreen-light)'" onblur="this.style.borderColor='var(--rule)'"></textarea>
+          </div>
+        </div>
+        <button onclick="submitTimeOff()" style="width:100%;background:var(--deepgreen);border:2px solid var(--deepgreen-light);color:#fff;padding:14px;border-radius:2px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s" onmouseover="this.style.background='var(--deepgreen-light)'" onmouseout="this.style.background='var(--deepgreen)'">Submit Request</button>
+      </div>
+    </div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--paper);margin-bottom:10px">My Requests</div>
+    <div id="torHistory"><div style="font-size:12px;color:var(--ink4);letter-spacing:2px;text-transform:uppercase;text-align:center;padding:16px">No requests yet</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════
+const SB_URL    = 'YOUR_SUPABASE_URL_HERE';
+const SB_KEY    = 'YOUR_SUPABASE_ANON_KEY_HERE';
+const HAIKU_KEY = 'YOUR_ANTHROPIC_KEY_HERE';
+const sbOK = SB_URL !== 'YOUR_SUPABASE_URL_HERE';
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let recipes = [], filteredRecipes = [], idx = 0, activeFilter = 'all';
+let prepItems = JSON.parse(localStorage.getItem('mc_prep') || '[]');
+let yieldLogs  = JSON.parse(localStorage.getItem('mc_yields') || '[]');
+let modalLang  = 'en';
+let timers     = {};
+let chatOpen   = false, chatHistory = [];
+let currentScale = 100;
+let currentRecipeId = null;
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  startClock();
+  loadRecipes();
+  renderPrep();
+  renderYieldHistory();
+});
+
+// ── CLOCK ──
+function startClock(){
+  function tick(){
+    const now = new Date();
+    var _lc=document.getElementById('liveClock');if(_lc)_lc.textContent =
+      now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    // Show day — Monday in maroon
+    const dayEl = document.getElementById('clockDay');
+    if(dayEl){
+      const dayName = now.toLocaleDateString('en-US',{weekday:'long'});
+      const isMonday = now.getDay() === 1;
+      dayEl.textContent = dayName.toUpperCase();
+      dayEl.style.color = isMonday ? 'var(--maroon)' : 'var(--ink4)';
+      dayEl.style.fontWeight = isMonday ? '900' : '700';
+    }
+  }
+  tick();
+  setInterval(tick,1000);
+}
+
+// ═══════════════════════════════════════
+// SUPABASE
+// ═══════════════════════════════════════
+async function sbFetch(path,opts={}){
+  const res=await fetch(`${SB_URL}/rest/v1/${path}`,{
+    headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,...(opts.headers||{})},
+    ...opts
+  });
+  if(!res.ok){const e=await res.json();throw new Error(e.message||'Supabase error');}
+  return res.status===204?null:res.json();
+}
+
+// ═══════════════════════════════════════
+// RECIPES
+// ═══════════════════════════════════════
+async function loadRecipes(){
+  if(!sbOK){seedRecipes();return;}
+  try{
+    const data=await sbFetch('recipes?order=name.asc&select=*');
+    recipes=(data||[]).map(r=>({
+      id:r.id,name:r.name,nameES:r.name_es||r.name,protein:r.protein,status:r.status,
+      ings:r.ingredients||[],method:r.method||[],methodES:r.method_es||[],
+      plating:r.plating||'',platingES:r.plating_es||'',
+      menuPrice:r.menu_price||35,perPortion:r.per_portion||0,
+      prepped:false,scale:100,
+      isFish:['salmon','cod','sea bass','halibut','tuna','snapper','trout','bass','branzino','flounder'].some(f=>(r.protein||'').toLowerCase().includes(f))
+    }));
+    filterRecipes();
+    updateYieldDropdown();
+  }catch(e){seedRecipes();}
+}
+
+function seedRecipes(){
+  recipes=[
+    {id:'s1',name:'Duck Leg Confit',nameES:'Confit de Muslo de Pato',protein:'Duck',status:'active',prepped:false,scale:100,isFish:false,
+     ings:[{name:'Duck Legs',qty:'4',unit:'ea'},{name:'Kosher Salt',qty:'2',unit:'tbsp'},{name:'Fresh Thyme',qty:'4',unit:'sprig'},{name:'Garlic',qty:'4',unit:'clove'},{name:'Duck Fat',qty:'2',unit:'cup'}],
+     method:['Salt-cure duck legs with thyme and garlic overnight.','Rinse, pat dry. Place skin-side down in deep pan.','Cover completely in rendered duck fat.','Cook at 200°F for 8 hours until very tender.','Cool in fat. Store up to 2 weeks refrigerated.','Sear skin-side in hot skillet until crispy golden.'],
+     methodES:['Curar muslos con sal, tomillo y ajo toda la noche.','Enjuagar, secar, colocar boca abajo.','Cubrir en grasa de pato.','Cocinar a 93°C por 8 horas.','Enfriar en grasa.','Sellar piel hasta dorado crujiente.'],
+     plating:'Crispy duck skin-up on wilted greens. Cherry jus pooled around.',platingES:'Pato crujiente sobre verduras. Salsa de cereza.',menuPrice:38,perPortion:9.20},
+    {id:'s2',name:'Miso Glazed Black Cod',nameES:'Bacalao Negro al Miso',protein:'Cod',status:'active',prepped:false,scale:100,isFish:true,
+     ings:[{name:'Black Cod Fillet',qty:'6',unit:'oz'},{name:'White Miso',qty:'3',unit:'tbsp'},{name:'Sake',qty:'2',unit:'tbsp'},{name:'Mirin',qty:'2',unit:'tbsp'},{name:'Sugar',qty:'1',unit:'tbsp'}],
+     method:['Whisk white miso, sake, mirin, and sugar until smooth.','Marinate cod 48 hours refrigerated.','Remove, wipe excess, bring to room temperature.','Broil on high 6–8 min until caramelized.','Rest 2 min — flesh should flake at gentle pressure.','Finish with yuzu zest and micro shiso.'],
+     methodES:['Mezclar miso, sake, mirin y azúcar.','Marinar bacalao 48 horas.','Retirar marinada, atemperar.','Asar 6–8 min hasta caramelizar.','Reposar 2 min.','Yuzu y micro shiso.'],
+     plating:'Cod lacquered-side up on dashi gel.',platingES:'Bacalao sobre gel dashi.',menuPrice:42,perPortion:13.40},
+    {id:'s3',name:'Herb Crusted Lamb Rack',nameES:'Rack de Cordero con Hierbas',protein:'Lamb',status:'approved',prepped:false,scale:100,isFish:false,
+     ings:[{name:'Lamb Rack',qty:'1',unit:'ea'},{name:'Dijon Mustard',qty:'2',unit:'tbsp'},{name:'Fresh Breadcrumbs',qty:'0.5',unit:'cup'},{name:'Mixed Herbs',qty:'0.25',unit:'cup'},{name:'Garlic',qty:'2',unit:'clove'}],
+     method:['French the bones clean. Tie with butchers twine.','Season aggressively. Sear all sides in smoking oil.','Cool completely. Brush with Dijon mustard.','Press herb crust firmly onto fat cap.','Roast 400°F 18–22 min to 130°F internal.','Rest 8 min. Slice — 2 chops per portion.'],
+     methodES:['Limpiar huesos y bridar.','Sazonar. Sellar todos los lados.','Enfriar. Pintar con Dijon.','Presionar costra de hierbas.','Asar 200°C 18–22 min a 54°C.','Reposar 8 min.'],
+     plating:'Two chops crossed, bones up. Mint jus pooled.',platingES:'Chuletas cruzadas. Salsa de menta.',menuPrice:45,perPortion:14.80},
+    {id:'s4',name:'Pan-Seared Salmon',nameES:'Salmón Sellado a la Sartén',protein:'Salmon',status:'active',prepped:false,scale:100,isFish:true,
+     ings:[{name:'Salmon Fillet',qty:'6',unit:'oz'},{name:'Clarified Butter',qty:'2',unit:'tbsp'},{name:'Garlic',qty:'1',unit:'clove'},{name:'Fresh Thyme',qty:'2',unit:'sprig'}],
+     method:['Score skin 3 times. Season both sides.','Heat cast iron to smoking, add oil.','Skin-side down. Press flat 30 seconds.','4 min skin side. Flip, 90 seconds.','Baste with brown butter, garlic, thyme.','Rest skin-up 2 min.'],
+     methodES:['Marcar piel 3 veces. Sazonar.','Sartén de hierro hasta humear.','Piel abajo. Presionar 30 seg.','4 min. Voltear, 90 seg.','Bañar con mantequilla dorada.','Reposar piel arriba.'],
+     plating:'Salmon skin-up on cauliflower purée.',platingES:'Salmón sobre puré de coliflor.',menuPrice:36,perPortion:10.80},
+    {id:'s5',name:'Beef Tenderloin Rossini',nameES:'Filete de Res Rossini',protein:'Beef',status:'active',prepped:false,scale:100,isFish:false,
+     ings:[{name:'Beef Tenderloin',qty:'6',unit:'oz'},{name:'Foie Gras',qty:'2',unit:'oz'},{name:'Brioche Round',qty:'1',unit:'ea'},{name:'Madeira',qty:'2',unit:'oz'},{name:'Truffle',qty:'0.5',unit:'oz'}],
+     method:['Portion tenderloin 6oz medallions, tie to shape.','Sear in clarified butter 2 min per side.','Sear foie gras 45 sec per side in dry pan.','Toast brioche rounds in pan drippings.','Stack: brioche, beef, foie on warm plate.','Madeira truffle demi-glace. Fleur de sel.'],
+     methodES:['Medallones de 180g. Bridar.','Sellar en mantequilla 2 min.','Foie gras 45 seg por lado.','Tostar brioche en los jugos.','Apilar: brioche, res, foie.','Madeira y trufa. Fleur de sel.'],
+     plating:'Rossini tower center. Madeira jus over. Truffle shaved tableside.',platingES:'Torre Rossini al centro. Trufa al momento.',menuPrice:65,perPortion:21.40},
+  ];
+  filterRecipes();
+  updateYieldDropdown();
+}
+
+// ── FILTER & RENDER ──
+// ── PAR / ON HAND / NEED ──
+function updateNeed(id) {
+  const r    = recipes.find(r=>r.id===id); if(!r)return;
+  const par  = parseFloat(document.getElementById('parLevel_'+id)?.value)||0;
+  const oh   = parseFloat(document.getElementById('onHand_'+id)?.value)||0;
+  const unit = document.getElementById('parUnit_'+id)?.value||'portions';
+  const needEl = document.getElementById('needToMake_'+id);
+  const sugEl  = document.getElementById('autoScaleSug_'+id);
+  r.par=par||undefined; r.onHand=oh||undefined;
+  if(!needEl)return;
+  if(!par){
+    needEl.textContent='—';needEl.style.color='var(--maroon)';
+    if(sugEl)sugEl.style.display='none';
+    return;
+  }
+  const need = Math.max(par-oh,0);
+  if(need===0){
+    needEl.textContent='✓ At Par';needEl.style.color='var(--deepgreen-light)';
+    if(sugEl)sugEl.style.display='none';
+    // Scale back to 0 — nothing to make
+    autoScale(id,25);
+    return;
+  }
+  needEl.textContent=need+' '+unit;needEl.style.color='var(--maroon)';
+  // Auto-apply scale immediately
+  const pct = Math.round((need/par)*100);
+  const closest = [25,50,75,100,125,150].reduce((a,b)=>Math.abs(b-pct)<Math.abs(a-pct)?b:a);
+  autoScale(id,closest);
+  if(sugEl){
+    sugEl.style.display='block';
+    sugEl.innerHTML='&#x26A1; Auto-scaled to <strong>'+closest+'%</strong> — makes '+need+' '+unit;
+  }
+}
+
+function autoScale(id,pct){
+  scaleRecipe(id,pct,null);
+  document.querySelectorAll('.sbtn').forEach(b=>{
+    if(b.textContent.trim()===pct+'%'){b.style.background='var(--deepgreen-light)';b.style.color='#fff';b.style.borderColor='var(--deepgreen-light)';}
+    else{b.style.background='transparent';b.style.color='var(--ink2)';b.style.borderColor='var(--rule)';}
+  });
+}
+
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  filterRecipes();
+}
+
+function filterRecipes(){
+  const q=(document.getElementById('fsearch')?.value||'').toLowerCase();
+  filteredRecipes=recipes.filter(r=>{
+    const matchStatus=activeFilter==='all'||r.status===activeFilter;
+    const matchSearch=!q||r.name.toLowerCase().includes(q)||(r.protein||'').toLowerCase().includes(q);
+    return matchStatus&&matchSearch;
+  });
+  if(idx>=filteredRecipes.length)idx=0;
+  renderCarousel();
+}
+
+function renderCarousel(){
+  var el=document.getElementById('carousel');
+  if(!filteredRecipes.length){
+    el.innerHTML='<div style="text-align:center;padding:60px;color:var(--ink4);font-size:13px;letter-spacing:3px;text-transform:uppercase">No recipes found</div>';
+    return;
+  }
+  if(idx>=filteredRecipes.length)idx=filteredRecipes.length-1;
+  var r=filteredRecipes[idx],n=filteredRecipes.length;
+  var dots=n<=20?filteredRecipes.map(function(_,i){return '<div class="ndot '+(i===idx?'on':'')+'" onclick="goTo('+i+')"></div>';}).join(''):'';
+  currentRecipeId=r.id;
+  currentScale=r.scale||100;
+  var sCls={draft:'chip-grey',testing:'chip-amber',approved:'chip-grey',active:'chip-red'}[r.status]||'chip-grey';
+  var L=modalLang;
+
+  var html='';
+  html+='<div class="nav-row">';
+  html+='  <button class="arr" onclick="prev()" '+(idx===0?'disabled':'')+'>&#8249;</button>';
+  html+='  <div class="nav-mid"><div class="nav-count">'+(idx+1)+' of '+n+'</div>';
+  if(dots)html+='<div class="nav-dots">'+dots+'</div>';
+  html+='  </div>';
+  html+='  <button class="arr" onclick="next()" '+(idx===n-1?'disabled':'')+'>&#8250;</button>';
+  html+='</div>';
+
+  html+='<div class="paper-card">';
+  html+='  <div class="holes"><div class="hole"></div><div class="hole"></div><div class="hole"></div></div>';
+  html+='  <div class="card-body">';
+
+  html+='    <div class="r-name">'+r.name+'</div>';
+  if(r.nameES&&r.nameES!==r.name)html+='<div class="r-name-es">'+r.nameES+'</div>';
+  html+='    <div class="r-chips">';
+  if(r.protein)html+='<span class="chip chip-grey">'+r.protein+'</span>';
+  html+='<span class="chip '+sCls+'">'+r.status.toUpperCase()+'</span>';
+  if(r.isFish)html+='<span class="chip chip-fish">&#x1F41F; Chef Handles</span>';
+  if(r.prepped)html+='<span class="chip chip-green">&#x2713; Prepped Today</span>';
+  html+='<span class="chip chip-grey">'+(r.ings?r.ings.length:0)+' Ingredients</span>';
+  html+='    </div>';
+
+  // PAR / ON HAND / NEED + SCALE BAR
+  html+='<div class="scale-bar">';
+  html+='  <div style="font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--maroon);margin-bottom:12px">Par Level & Scale</div>';
+  html+='  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:14px">';
+
+  html+='    <div style="display:flex;flex-direction:column;gap:4px">';
+  html+='      <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Par</label>';
+  html+='      <input type="number" id="parLevel_'+r.id+'" placeholder="0" min="0" value="'+(r.par||'')+'" oninput="updateNeed(\''+r.id+'\')" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:8px 10px;font-size:28px;font-weight:700;color:var(--ink);outline:none;width:100%">';
+  html+='    </div>';
+
+  html+='    <div style="display:flex;flex-direction:column;gap:4px">';
+  html+='      <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">On Hand</label>';
+  html+='      <input type="number" id="onHand_'+r.id+'" placeholder="0" min="0" value="'+(r.onHand||'')+'" oninput="updateNeed(\''+r.id+'\')" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:8px 10px;font-size:28px;font-weight:700;color:var(--ink);outline:none;width:100%">';
+  html+='    </div>';
+
+  html+='    <div style="display:flex;flex-direction:column;gap:4px">';
+  html+='      <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Unit</label>';
+  html+='      <select id="parUnit_'+r.id+'" onchange="updateNeed(\''+r.id+'\')" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:8px 10px;font-size:14px;color:var(--ink);outline:none;height:52px">';
+  html+='        <option value="portions">portions</option><option value="oz">oz</option><option value="lbs">lbs</option><option value="gal">gal</option><option value="qt">qt</option><option value="each">each</option><option value="cups">cups</option>';
+  html+='      </select>';
+  html+='    </div>';
+
+  html+='    <div style="display:flex;flex-direction:column;gap:4px">';
+  html+='      <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--maroon)">Need to Make</label>';
+  html+='      <div id="needToMake_'+r.id+'" style="background:rgba(96,7,29,.06);border:2px solid rgba(96,7,29,.2);border-radius:2px;padding:8px 10px;font-size:28px;font-weight:900;color:var(--maroon);min-height:52px;display:flex;align-items:center">&#x2014;</div>';
+  html+='    </div>';
+  html+='  </div>';
+
+  // Auto scale suggestion
+  html+='  <div id="autoScaleSug_'+r.id+'" style="display:none;margin-bottom:10px;padding:8px 12px;background:rgba(26,92,48,.08);border:2px solid var(--deepgreen-light);border-radius:2px;font-size:13px;color:var(--deepgreen-light);font-weight:700"></div>';
+
+  // Scale buttons
+  html+='  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Manual Scale</div>';
+  html+='  <div class="scale-btns">';
+  [25,50,75,100,125,150].forEach(function(p){
+    html+='<button class="sbtn '+(currentScale===p?'on':'')+'" onclick="scaleRecipe(\''+r.id+'\','+p+',this)">'+p+'%</button>';
+  });
+  html+='  </div>';
+  html+='  <div class="scale-note" id="scaleNote">'+(currentScale!==100?'Scaled to '+currentScale+'% — all quantities adjusted':'Showing full recipe at 100%')+'</div>';
+  html+='</div>'; // end scale-bar
+
+  // Lang toggle
+  html+='<div class="lang-row">';
+  html+='  <span class="lang-lbl">Language:</span>';
+  html+='  <button class="ltbtn '+(L==='en'?'on':'')+'" onclick="setLang(\''+r.id+'\',\'en\')">English</button>';
+  html+='  <button class="ltbtn '+(L==='es'?'on':'')+'" onclick="setLang(\''+r.id+'\',\'es\')">Español</button>';
+  html+='</div>';
+
+  // Timers
+  html+='<div class="timer-wrap">';
+  html+='  <div class="timer-head">&#x23F1; Timers</div>';
+  html+='  <div class="timer-presets">';
+  [5,10,15,20,30,45,60,90,120].forEach(function(m){
+    var lbl=m<60?m+'m':(m/60)+'h';
+    var desc=m<60?m+' min':(m/60)+' hr';
+    html+='<button class="tpreset" onclick="quickTimer('+m+',\''+desc+'\')">'+lbl+'</button>';
+  });
+  html+='  </div>';
+  html+='  <div class="timer-add-row">';
+  html+='    <input class="timer-name-inp" type="text" id="timerName" placeholder="Label..." maxlength="30">';
+  html+='    <input class="timer-dur-inp" type="number" id="timerMins" placeholder="min" min="1" max="180">';
+  html+='    <span style="font-size:12px;color:rgba(255,255,255,.3);display:flex;align-items:center">min</span>';
+  html+='    <button class="timer-start-btn" onclick="addTimer()">+ Start</button>';
+  html+='  </div>';
+  html+='  <div class="timers-list" id="timersList"><div class="timer-empty">No timers running</div></div>';
+  html+='</div>';
+
+  // Ingredients
+  html+='<div class="sh">'+( L==='es'?'Ingredientes':'Ingredients')+'</div>';
+  html+='<table class="ing-table" id="ingTable">'+buildIngRows(r,currentScale)+'</table>';
+
+  // Method
+  html+='<div class="sh">'+(L==='es'?'M&#xe9;todo':'Method')+'</div>';
+  html+='<div class="steps">';
+  var method=L==='es'?r.methodES:r.method;
+  if(method&&method.length){
+    method.forEach(function(step,i){
+      html+='<div class="step"><div class="snum">'+(i+1)+'.</div><div class="stxt">'+step+'</div></div>';
+    });
+  }
+  html+='</div>';
+
+  // Plating
+  html+='<div class="sh">'+(L==='es'?'Emplatado':'Plating')+'</div>';
+  html+='<div class="plating"><div class="plating-line">'+(L==='es'?(r.platingES||r.plating):r.plating)+'</div></div>';
+
+  // Mark prepped or fish lock
+  if(!r.isFish){
+    html+='<button class="prepped-btn '+(r.prepped?'done':'')+'" onclick="markPrepped(\''+r.id+'\')">';
+    html+=r.prepped?'&#x2713; Marked as Prepped Today':'&#x2713; Mark as Prepped for Today';
+    html+='</button>';
+  } else {
+    html+='<div class="fish-lock"><div class="fish-lock-title">&#x1F41F; Fish &#x2014; Chef Handles This</div><div class="fish-lock-sub">Fish butchery and portioning is the Chef\'s station.</div></div>';
+  }
+
+  // YIELD LOG — right on the card, only for non-fish
+  if(!r.isFish){
+    html+='<div style="margin-top:20px;border-top:3px double var(--rule2);padding-top:20px">';
+    html+='  <div style="font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--deepgreen-light);margin-bottom:14px">&#x2696; Yield Log</div>';
+
+    // Raw + Finished weight with oz/lbs
+    html+='  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">';
+
+    html+='    <div style="display:flex;flex-direction:column;gap:4px">';
+    html+='      <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Raw Weight</label>';
+    html+='      <div style="display:flex;gap:4px">';
+    html+='        <input type="number" id="cYieldRaw_'+r.id+'" placeholder="—" min="0" oninput="calcCardYield(\''+r.id+'\')" style="flex:1;background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:8px 8px;font-size:22px;font-weight:700;color:var(--ink);outline:none;min-width:0">';
+    html+='        <select id="cYieldRawUnit_'+r.id+'" onchange="calcCardYield(\''+r.id+'\')" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:4px 6px;font-size:13px;color:var(--ink);outline:none;flex-shrink:0">';
+    html+='          <option value="oz">oz</option><option value="lbs">lbs</option>';
+    html+='        </select>';
+    html+='      </div>';
+    html+='    </div>';
+
+    html+='    <div style="display:flex;flex-direction:column;gap:4px">';
+    html+='      <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Finished Weight</label>';
+    html+='      <div style="display:flex;gap:4px">';
+    html+='        <input type="number" id="cYieldFin_'+r.id+'" placeholder="—" min="0" oninput="calcCardYield(\''+r.id+'\')" style="flex:1;background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:8px 8px;font-size:22px;font-weight:700;color:var(--ink);outline:none;min-width:0">';
+    html+='        <select id="cYieldFinUnit_'+r.id+'" onchange="calcCardYield(\''+r.id+'\')" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:4px 6px;font-size:13px;color:var(--ink);outline:none;flex-shrink:0">';
+    html+='          <option value="oz">oz</option><option value="lbs">lbs</option>';
+    html+='        </select>';
+    html+='      </div>';
+    html+='    </div>';
+
+    html+='    <div style="display:flex;flex-direction:column;gap:4px">';
+    html+='      <label style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Portions Made</label>';
+    html+='      <input type="number" id="cYieldPor_'+r.id+'" placeholder="10" min="1" oninput="calcCardYield(\''+r.id+'\')" style="background:rgba(255,255,255,.8);border:2px solid var(--rule);border-radius:2px;padding:8px 8px;font-size:22px;font-weight:700;color:var(--ink);outline:none;width:100%">';
+    html+='    </div>';
+    html+='  </div>';
+
+    // Results row
+    html+='  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:rgba(0,0,0,.04);border-radius:2px;padding:12px;margin-bottom:12px">';
+    html+='    <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink4);font-weight:700">Yield %</div><div id="cResYield_'+r.id+'" style="font-size:28px;font-weight:900;color:var(--deepgreen-light)">&#x2014;</div></div>';
+    html+='    <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink4);font-weight:700">Waste %</div><div id="cResWaste_'+r.id+'" style="font-size:28px;font-weight:900;color:var(--red)">&#x2014;</div></div>';
+    html+='    <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink4);font-weight:700">Loss (oz)</div><div id="cResLoss_'+r.id+'" style="font-size:28px;font-weight:900;color:var(--red)">&#x2014;</div></div>';
+    html+='    <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink4);font-weight:700">oz / Portion</div><div id="cResOzPP_'+r.id+'" style="font-size:28px;font-weight:900;color:var(--ink)">&#x2014;</div></div>';
+    html+='  </div>';
+
+    html+='  <button onclick="saveCardYield(\''+r.id+'\')" style="width:100%;background:var(--deepgreen);border:2px solid var(--deepgreen-light);color:#fff;padding:12px;border-radius:2px;font-size:18px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s">&#x1F4BE; Log Yield</button>';
+    html+='</div>';
+  }
+
+  html+='  </div>'; // card-body
+  html+='</div>'; // paper-card
+
+  el.innerHTML=html;
+}
+
+function buildIngRows(r,scale){
+  const s=scale/100;
+  return (r.ings||[]).map(ing=>{
+    const qty=parseFloat(ing.qty);
+    const scaledQty=!isNaN(qty)?(qty*s).toFixed(qty<1?2:1)+' '+(ing.unit||''):ing.unit||'';
+    return `<tr><td class="td-name">${ing.name}</td><td class="td-qty">${scaledQty}</td></tr>`;
+  }).join('');
+}
+
+function getScaleNote(r){
+  return `Recipe starts at <strong>100%</strong> — adjust in 25% steps`;
+}
+
+function scaleRecipe(id,pct,btn){
+  const r=recipes.find(r=>r.id===id);if(!r)return;
+  r.scale=pct; currentScale=pct;
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));
+  if(btn&&btn.classList)btn.classList.add('on');
+  const ingTable=document.getElementById('ingTable');
+  if(ingTable)ingTable.innerHTML=buildIngRows(r,pct);
+  const scaleNote=document.getElementById('scaleNote');
+  if(scaleNote)scaleNote.textContent=pct!==100?'Scaled to '+pct+'% — all quantities adjusted':'Showing full recipe at 100%';
+}
+
+function setLang(id,lang){
+  modalLang=lang;
+  filterRecipes();
+  // re-render but keep idx
+  renderCarousel();
+}
+
+function markPrepped(id){
+  const r=recipes.find(r=>r.id===id);if(!r||r.prepped)return;
+  r.prepped=true;
+  renderCarousel();
+  showToast('✓ '+r.name+' marked as prepped','success');
+}
+
+// ── CARD YIELD LOG — AUTO CALC ──
+function calcCardYield(id){
+  var rawVal = parseFloat(document.getElementById('cYieldRaw_'+id)?.value)||0;
+  var porVal = parseFloat(document.getElementById('cYieldPor_'+id)?.value)||0;
+  var rawUnit= document.getElementById('cYieldRawUnit_'+id)?.value||'oz';
+  var catEl  = document.getElementById('cYieldCat_'+id);
+  var cat    = catEl ? catEl.value : 'meat';
+
+  // Convert to oz
+  var raw = rawUnit==='lbs' ? rawVal*16 : rawVal;
+
+  if(!raw) return;
+
+  // Apply yield standard automatically
+  var yieldStd = cat==='fish' ? 0.95 : cat==='sauce' ? 0.92 : cat==='produce' ? 0.88 : 0.85; // meat=85%
+  var fin  = +(raw * yieldStd).toFixed(2);
+  var loss = +(raw - fin).toFixed(2);
+  var yPct = +(yieldStd*100).toFixed(1);
+  var wPct = +(100-yPct).toFixed(1);
+  var por  = porVal > 0 ? porVal : Math.round(fin/8); // default 8oz portions if not set
+  var ozPP = porVal > 0 ? +(fin/por).toFixed(2) : null;
+
+  // Auto-fill Finished Weight
+  var finEl = document.getElementById('cYieldFin_'+id);
+  if(finEl) {
+    finEl.value = rawUnit==='lbs' ? (fin/16).toFixed(2) : fin;
+    finEl.style.background='rgba(26,92,48,.08)';
+    finEl.style.borderColor='var(--deepgreen-light)';
+    finEl.readOnly = true;
+  }
+
+  // Fill results
+  var ry=document.getElementById('cResYield_'+id);
+  var rw=document.getElementById('cResWaste_'+id);
+  var rl=document.getElementById('cResLoss_'+id);
+  var rp=document.getElementById('cResOzPP_'+id);
+  if(ry)ry.textContent=yPct+'%';
+  if(rw)rw.textContent=wPct+'%';
+  if(rl)rl.textContent=loss+' oz';
+  if(rp)rp.textContent=ozPP ? ozPP+' oz' : '— enter portions';
+
+  // Show standard note
+  var stdLabels={meat:'Meat 85% yield applied',fish:'Fish 95% yield applied',sauce:'Sauce 92% yield applied',produce:'Produce 88% yield applied'};
+  var stdEl=document.getElementById('cYieldStd_'+id);
+  if(stdEl)stdEl.textContent=stdLabels[cat]||'';
+}
+
+async function saveCardYield(id){
+  var rawVal=parseFloat(document.getElementById('cYieldRaw_'+id)?.value)||null;
+  var finVal=parseFloat(document.getElementById('cYieldFin_'+id)?.value)||null;
+  var rawUnit=document.getElementById('cYieldRawUnit_'+id)?.value||'oz';
+  var finUnit=document.getElementById('cYieldFinUnit_'+id)?.value||'oz';
+  var raw=rawVal?(rawUnit==='lbs'?rawVal*16:rawVal):null;
+  var fin=finVal?(finUnit==='lbs'?finVal*16:finVal):null;
+  var por=parseFloat(document.getElementById('cYieldPor_'+id)?.value)||10;
+  var yPct=raw&&fin?+((fin/raw)*100).toFixed(1):null;
+  var wPct=yPct?+(100-yPct).toFixed(1):null;
+  if(!raw){showToast('Enter Raw Weight first','error');return;}
+  const r=recipes.find(r=>r.id===id);
+  const log={
+    id:'y_'+Date.now().toString(36),
+    recipeId:id,recipeName:r?r.name:'',
+    raw,finished:fin,portions:por,
+    yieldPct:yPct,wastePct:wPct,
+    lossOz:raw&&fin?+(raw-fin).toFixed(2):null,
+    ozPerPortion:fin&&por?+(fin/por).toFixed(2):null,
+    loggedAt:new Date().toISOString(),
+    loggedAtDisplay:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+  };
+  yieldLogs.unshift(log);
+  localStorage.setItem('mc_yields',JSON.stringify(yieldLogs));
+  if(sbOK){
+    try{await sbFetch('yield_logs',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(log)});}
+    catch(e){console.error(e);}
+  }
+  showToast('✓ Yield logged — '+(r?r.name:'recipe'),'success');
+}
+
+function prev(){if(idx>0){idx--;renderCarousel();}}
+function next(){if(idx<filteredRecipes.length-1){idx++;renderCarousel();}}
+function goTo(i){idx=i;renderCarousel();}
+
+function updateYieldDropdown(){
+  const sel=document.getElementById('yieldRecipe');
+  if(!sel)return;
+  sel.innerHTML='<option value="">— Select Recipe —</option>'+
+    recipes.filter(r=>!r.isFish).map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+}
+
+// ═══════════════════════════════════════
+// PREP LIST
+// ═══════════════════════════════════════
+function addPrepItem(){
+  const input=document.getElementById('prepInput');
+  const text=input.value.trim();if(!text)return;
+  const item={id:'p_'+Date.now().toString(36),text,done:false,addedAt:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})};
+  prepItems.unshift(item);
+  localStorage.setItem('mc_prep',JSON.stringify(prepItems));
+  input.value='';
+  renderPrep();
+}
+
+function togglePrep(id){
+  const item=prepItems.find(p=>p.id===id);
+  if(item){item.done=!item.done;item.doneAt=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+  localStorage.setItem('mc_prep',JSON.stringify(prepItems));
+  renderPrep();
+}
+
+function deletePrep(id){
+  prepItems=prepItems.filter(p=>p.id!==id);
+  localStorage.setItem('mc_prep',JSON.stringify(prepItems));
+  renderPrep();
+}
+
+function clearDone(){
+  prepItems=prepItems.filter(p=>!p.done);
+  localStorage.setItem('mc_prep',JSON.stringify(prepItems));
+  renderPrep();
+}
+
+function renderPrep(){
+  const el=document.getElementById('prepItems');
+  const total=prepItems.length,done=prepItems.filter(p=>p.done).length;
+  const countEl=document.getElementById('prepCountLbl');
+  const progEl=document.getElementById('prepProgress');
+  if(countEl)countEl.textContent=`${done} / ${total}`;
+  if(progEl)progEl.textContent=total===0?'Ready to go':done===total?'✓ All done!':`${total-done} remaining`;
+  if(!el)return;
+  if(!total){el.innerHTML=`<div class="prep-empty">No prep tasks yet — add one above</div>`;return;}
+  el.innerHTML=prepItems.map(p=>`
+    <div class="prep-item ${p.done?'done':''}">
+      <div class="prep-check ${p.done?'done':''}" onclick="togglePrep('${p.id}')">
+        <span class="prep-check-inner">✓</span>
+      </div>
+      <div class="prep-text">${p.text}</div>
+      <div class="prep-meta">${p.addedAt}${p.doneAt?'<br>Done '+p.doneAt:''}</div>
+      <button class="prep-del" onclick="deletePrep('${p.id}')">×</button>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// YIELD LOG
+// ═══════════════════════════════════════
+function updateYieldCategory(){
+  const cat=document.getElementById('yieldCategory').value;
+  const lockMsg=document.getElementById('fishLockMsg');
+  const formBody=document.getElementById('yieldFormBody');
+  const std=document.getElementById('yieldStandard');
+  if(cat==='fish'){
+    lockMsg.style.display='block';
+    formBody.style.display='none';
+  }else{
+    lockMsg.style.display='none';
+    formBody.style.display='block';
+    const standards={meat:'🥩 Meat — 15% waste standard',sauce:'🥣 Sauce/Prepared — weight must match recipe',produce:'🥗 Produce — log weight in and out'};
+    if(std)std.textContent=standards[cat]||'';
+  }
+}
+
+function calcYield(){
+  var rawVal  = parseFloat(document.getElementById('yieldRaw')?.value)||0;
+  var porVal  = parseFloat(document.getElementById('yieldPor')?.value)||0;
+  var rawUnit = document.getElementById('yieldRawUnit')?.value||'oz';
+  var cat     = document.getElementById('yieldCategory')?.value||'meat';
+  var raw     = rawUnit==='lbs' ? rawVal*16 : rawVal;
+  if(!raw) return;
+
+  // Apply yield standard automatically
+  var yieldStd = cat==='fish'?0.95:cat==='sauce'?0.92:cat==='produce'?0.88:0.85;
+  var fin  = +(raw*yieldStd).toFixed(2);
+  var loss = +(raw-fin).toFixed(2);
+  var yPct = +(yieldStd*100).toFixed(1);
+  var wPct = +(100-yPct).toFixed(1);
+  var ozPP = porVal>0 ? +(fin/porVal).toFixed(2) : null;
+
+  var stdLabels={meat:'Meat — 85% yield standard applied automatically',fish:'Fish — 95% yield standard applied',sauce:'Sauce/Prepared — 92% yield standard applied',produce:'Produce — 88% yield standard applied'};
+  var noteEl=document.getElementById('yieldAutoNote');
+  if(noteEl)noteEl.textContent=stdLabels[cat]||'';
+
+  var finDisp = rawUnit==='lbs' ? (fin/16).toFixed(2)+' lbs' : fin+' oz';
+  var resF=document.getElementById('resFinished');
+  var resY=document.getElementById('resYield');
+  var resW=document.getElementById('resWaste');
+  var resL=document.getElementById('resLoss');
+  var resP=document.getElementById('resOzPP');
+  if(resF)resF.textContent=finDisp;
+  if(resY)resY.textContent=yPct+'%';
+  if(resW)resW.textContent=wPct+'%';
+  if(resL)resL.textContent=loss+' oz';
+  if(resP)resP.textContent=ozPP?ozPP+' oz':'— enter portions';
+}
+
+function calcFromYield(){
+  const yPct=parseFloat(document.getElementById('yieldPctIn').value)||0;
+  if(yPct>0&&yPct<=100){
+    const wPct=+(100-yPct).toFixed(1);
+    var _ry=document.getElementById('resYield');if(_ry)_ry.textContent=yPct+'%';
+    var _rw=document.getElementById('resWaste');if(_rw)_rw.textContent=wPct+'%';
+    document.getElementById('wastePctIn').value=wPct;
+  }
+}
+
+function calcFromWaste(){
+  const wPct=parseFloat(document.getElementById('wastePctIn').value)||0;
+  if(wPct>=0&&wPct<100){
+    const yPct=+(100-wPct).toFixed(1);
+    var _ry=document.getElementById('resYield');if(_ry)_ry.textContent=yPct+'%';
+    var _rw=document.getElementById('resWaste');if(_rw)_rw.textContent=wPct+'%';
+    document.getElementById('yieldPctIn').value=yPct;
+  }
+}
+
+async function saveYield(){
+  const recipeId=document.getElementById('yieldRecipe').value;
+  const cat=document.getElementById('yieldCategory').value;
+  if(cat==='fish'){showToast('Fish yield is logged by the Chef','error');return;}
+  const rawVal=parseFloat(document.getElementById('yieldRaw').value)||null;
+  const rawUnit=document.getElementById('yieldRawUnit')?.value||'oz';
+  const por=parseFloat(document.getElementById('yieldPor').value)||null;
+  const notes=document.getElementById('yieldNotes').value.trim();
+  if(!recipeId){showToast('Select a recipe first','error');return;}
+  if(!rawVal){showToast('Enter raw weight first','error');return;}
+
+  const raw=rawUnit==='lbs'?rawVal*16:rawVal;
+  const yieldStd=cat==='sauce'?0.92:cat==='produce'?0.88:0.85;
+  const fin=+(raw*yieldStd).toFixed(2);
+  const yPct=+(yieldStd*100).toFixed(1);
+  const wPct=+(100-yPct).toFixed(1);
+  const lossOz=+(raw-fin).toFixed(2);
+  const ozPerPortion=por?+(fin/por).toFixed(2):null;
+
+  const recipe=recipes.find(r=>r.id===recipeId);
+  const log={
+    id:'y_'+Date.now().toString(36),
+    recipeId,recipeName:recipe?.name||'',category:cat,
+    raw,finished:fin,portions:por,
+    yieldPct:yPct,wastePct:wPct,lossOz,ozPerPortion,
+    notes,loggedAt:new Date().toISOString(),
+    loggedAtDisplay:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+  };
+  yieldLogs.unshift(log);
+  localStorage.setItem('mc_yields',JSON.stringify(yieldLogs));
+  if(sbOK){
+    try{await sbFetch('yield_logs',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(log)});}
+    catch(e){console.error('Yield push failed:',e);}
+  }
+  document.getElementById('yieldRaw').value='';
+  document.getElementById('yieldPor').value='';
+  document.getElementById('yieldNotes').value='';
+  document.getElementById('yieldRecipe').value='';
+  ['resFinished','resYield','resWaste','resLoss','resOzPP'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.textContent='—';
+  });
+  var noteEl=document.getElementById('yieldAutoNote');
+  if(noteEl)noteEl.textContent='Enter raw weight above — results auto-calculate';
+  renderYieldHistory();
+  showToast('✓ Yield logged — '+( recipe?.name||'recipe'),'success');
+}
+
+function renderYieldHistory(){
+  const el=document.getElementById('yieldHistory');if(!el)return;
+  const today=new Date().toDateString();
+  const todayLogs=yieldLogs.filter(l=>new Date(l.loggedAt).toDateString()===today);
+  if(!todayLogs.length){
+    el.innerHTML=`<div style="font-size:12px;color:var(--ink4);letter-spacing:2px;text-transform:uppercase;text-align:center;padding:20px">No yield logs yet today</div>`;
+    return;
+  }
+  el.innerHTML=todayLogs.map(l=>`
+    <div style="background:var(--paper);border-radius:2px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.3)">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--ink)">${l.recipeName}</div>
+        <div style="font-size:12px;color:var(--ink4)">${l.category} · ${l.loggedAtDisplay}${l.notes?' · '+l.notes:''}</div>
+      </div>
+      <div style="display:flex;gap:16px">
+        ${l.yieldPct?`<div style="text-align:center"><div style="font-size:11px;color:var(--ink4);letter-spacing:1px;text-transform:uppercase">Yield</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--deepgreen-light)">${l.yieldPct}%</div></div>`:''}
+        ${l.wastePct?`<div style="text-align:center"><div style="font-size:11px;color:var(--ink4);letter-spacing:1px;text-transform:uppercase">Waste</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--red)">${l.wastePct}%</div></div>`:''}
+        ${l.ozPerPortion?`<div style="text-align:center"><div style="font-size:11px;color:var(--ink4);letter-spacing:1px;text-transform:uppercase">oz/Portion</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--ink)">${l.ozPerPortion}</div></div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// TIMERS
+// ═══════════════════════════════════════
+function quickTimer(mins,label){
+  document.getElementById('timerName').value=label;
+  document.getElementById('timerMins').value=mins;
+  addTimer();
+}
+
+function addTimer(){
+  const name=document.getElementById('timerName').value.trim()||'Timer';
+  const mins=parseInt(document.getElementById('timerMins').value)||0;
+  if(!mins||mins<1){showToast('Enter minutes','error');return;}
+  const capped=Math.min(mins,180);
+  const id='t_'+Date.now().toString(36);
+  timers[id]={id,name,totalSeconds:capped*60,seconds:capped*60,running:false,interval:null};
+  document.getElementById('timerName').value='';
+  document.getElementById('timerMins').value='';
+  startTimerById(id);
+  renderTimers();
+}
+
+function startTimerById(id){
+  const t=timers[id];if(!t||t.running)return;
+  t.running=true;
+  t.interval=setInterval(()=>{
+    t.seconds--;
+    updateTimerCard(id);
+    if(t.seconds<=0){
+      clearInterval(t.interval);t.running=false;t.seconds=0;
+      showToast(`⏰ ${t.name} — Done!`,'success');
+      renderTimers();
+    }
+  },1000);
+  renderTimers();
+}
+
+function pauseTimer(id){
+  const t=timers[id];if(!t)return;
+  if(t.running){clearInterval(t.interval);t.running=false;}
+  else{startTimerById(id);return;}
+  renderTimers();
+}
+
+function stopTimer(id){
+  const t=timers[id];if(!t)return;
+  clearInterval(t.interval);delete timers[id];
+  renderTimers();
+}
+
+function updateTimerCard(id){
+  const t=timers[id];if(!t)return;
+  const el=document.getElementById('tc_'+id);if(!el)return;
+  const m=Math.floor(t.seconds/60),s=t.seconds%60;
+  const disp=el.querySelector('.timer-card-display');
+  if(disp)disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+function renderTimers(){
+  const el=document.getElementById('timersList');if(!el)return;
+  const ids=Object.keys(timers);
+  if(!ids.length){el.innerHTML=`<div class="timer-empty">No timers running</div>`;return;}
+  el.innerHTML=ids.map(id=>{
+    const t=timers[id];
+    const m=Math.floor(t.seconds/60),s=t.seconds%60;
+    const display=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    const state=t.seconds===0?'done':t.running?'running':'';
+    return `<div class="timer-card ${state}" id="tc_${id}">
+      <div class="timer-card-name">${t.name}</div>
+      <div class="timer-card-display">${display}</div>
+      <div class="timer-card-btns">
+        ${t.seconds>0?`<button class="tcbtn ${t.running?'pause':'resume'}" onclick="pauseTimer('${id}')">${t.running?'Pause':'Resume'}</button>`:''}
+        <button class="tcbtn stop" onclick="stopTimer('${id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// LIVE SCHEDULE — Read Only from Chef
+// ═══════════════════════════════════════
+function loadLiveSchedule() {
+  const el    = document.getElementById('schedReadOnly');
+  const status = document.getElementById('schedLiveStatus');
+  if (!el) return;
+
+  // Try localStorage first (same device), then Supabase
+  const raw = localStorage.getItem('mc_live_schedule');
+  if (raw) {
+    const sched = JSON.parse(raw);
+    renderLiveSchedule(sched, el, status);
+  } else if (sbOK) {
+    sbFetch('schedules?id=eq.boh_schedule&select=*')
+      .then(data => {
+        if (data && data[0]) renderLiveSchedule(data[0], el, status);
+        else { el.innerHTML = `<div style="text-align:center;padding:60px;color:var(--ink4);font-size:13px;letter-spacing:3px;text-transform:uppercase">No schedule pushed yet — Chef will push when ready</div>`; status.textContent=''; }
+      }).catch(()=>{});
+  } else {
+    el.innerHTML = `<div style="text-align:center;padding:60px;color:var(--ink4);font-size:13px;letter-spacing:3px;text-transform:uppercase">No schedule pushed yet — Chef will push when ready</div>`;
+    if (status) status.textContent = '';
+  }
+}
+
+function renderLiveSchedule(sched, el, status) {
+  const pushedAt = sched.pushed_at ? new Date(sched.pushed_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '—';
+  if (status) status.textContent = `Live · Pushed ${pushedAt} by ${sched.pushed_by||'Chef'} · ${sched.week||''}`;
+
+  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = new Date().getDay();
+  const staff = sched.staff || [];
+
+  // Today's staff — highlight today's column
+  el.innerHTML = `
+    <div style="overflow-x:auto;border:2px solid var(--rule);border-radius:2px;margin-bottom:24px">
+      <table style="width:100%;border-collapse:collapse;font-size:15px;min-width:700px">
+        <thead>
+          <tr style="background:var(--paper2)">
+            <th style="text-align:left;padding:10px 14px;border-bottom:3px solid var(--ink);border-right:1px solid var(--rule);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Position</th>
+            <th style="text-align:left;padding:10px 14px;border-bottom:3px solid var(--ink);border-right:1px solid var(--rule);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)">Name</th>
+            ${DAYS.map((d,i)=>`<th style="text-align:center;padding:10px 8px;border-bottom:3px solid var(--ink);border-right:1px solid var(--rule);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${i===today?'var(--deepgreen-light)':'var(--ink3)'};${i===today?'background:rgba(26,92,48,.06)':''}">${d}${i===today?' ◀':''}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${staff.map(e=>`<tr style="background:var(--paper)">
+            <td style="padding:10px 14px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);font-weight:700;color:var(--maroon);font-family:'Barlow Condensed',sans-serif;font-size:17px">${e.pos}</td>
+            <td style="padding:10px 14px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);font-family:'Barlow Condensed',sans-serif;font-size:17px;color:var(--ink2)">${e.name}</td>
+            ${(e.d||[]).map((sh,i)=>`<td style="text-align:center;padding:10px 8px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;${sh==='OFF'?'color:var(--rule)':'color:var(--deepgreen-light)'};${i===today?'background:rgba(26,92,48,.06)':''}">${sh==='OFF'?'OFF':sh}</td>`).join('')}
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TODAY CARD -->
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--maroon);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--ink)">Today — ${DAYS[today]}</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${staff.filter(e=>e.d&&e.d[today]&&e.d[today]!=='OFF').map(e=>`
+        <div style="background:var(--paper);border-radius:2px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.3)">
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--ink)">${e.name}</div>
+            <div style="font-size:12px;color:var(--maroon);font-weight:700;letter-spacing:2px;text-transform:uppercase">${e.pos}</div>
+          </div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--deepgreen-light)">${e.d[today]}</div>
+        </div>`).join('')}
+      ${staff.filter(e=>!e.d||e.d[today]==='OFF').length===staff.length?`<div style="text-align:center;padding:20px;color:var(--ink4);font-size:13px;letter-spacing:2px;text-transform:uppercase">Everyone is off today</div>`:''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════
+// TIME OFF REQUESTS
+// ═══════════════════════════════════════
+let timeOffRequests = JSON.parse(localStorage.getItem('mc_timeoff') || '[]');
+
+async function submitTimeOff() {
+  const name   = document.getElementById('torName').value.trim();
+  const type   = document.getElementById('torType').value;
+  const date   = document.getElementById('torDate').value;
+  const ret    = document.getElementById('torReturn').value;
+  const note   = document.getElementById('torNote').value.trim();
+
+  if (!name) { showToast('Enter your name','error'); return; }
+  if (!date) { showToast('Select a date','error'); return; }
+
+  const typeLabels = {
+    day_off:'Day Off', vacation:'Vacation', personal:'Personal Day',
+    sick:'Sick Day', schedule_change:'Schedule Change'
+  };
+
+  const req = {
+    id: 'tor_' + Date.now().toString(36),
+    name, type, typeLabel: typeLabels[type] || type,
+    date, returnDate: ret || null,
+    note, status: 'pending',
+    submittedAt: new Date().toISOString(),
+    submittedAtDisplay: new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
+  };
+
+  timeOffRequests.unshift(req);
+  localStorage.setItem('mc_timeoff', JSON.stringify(timeOffRequests));
+
+  // Push to Supabase so Chef sees it
+  if (sbOK) {
+    try {
+      await sbFetch('time_off_requests', {
+        method: 'POST',
+        headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify(req)
+      });
+    } catch(e) { console.error('Time off push failed:', e); }
+  }
+
+  // Clear form
+  ['torName','torDate','torReturn','torNote'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('torType').value = 'day_off';
+
+  renderTimeOffHistory();
+  showToast(`✓ Request submitted — Chef will confirm`, 'success');
+}
+
+function renderTimeOffHistory() {
+  const el = document.getElementById('torHistory'); if (!el) return;
+  if (!timeOffRequests.length) {
+    el.innerHTML = `<div style="font-size:12px;color:var(--ink4);letter-spacing:2px;text-transform:uppercase;text-align:center;padding:20px">No requests submitted yet</div>`;
+    return;
+  }
+  const statusColor = { pending: 'var(--amber)', approved: 'var(--deepgreen-light)', denied: 'var(--red)' };
+  el.innerHTML = timeOffRequests.map(r => `
+    <div style="background:var(--paper);border-radius:2px;padding:16px 20px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.3);border-left:4px solid ${statusColor[r.status]||'var(--rule)'}">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--ink)">${r.typeLabel} — ${formatDate(r.date)}${r.returnDate?' → '+formatDate(r.returnDate):''}</div>
+        <div style="font-size:12px;color:var(--ink4);margin-top:2px">${r.name} · Submitted ${r.submittedAtDisplay}${r.note?' · "'+r.note+'"':''}</div>
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${statusColor[r.status]||'var(--rule)'}">${r.status.toUpperCase()}</div>
+    </div>`).join('');
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
+}
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+function showLayer(id,ev){
+  document.querySelectorAll('.layer').forEach(l=>l.classList.remove('visible'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('layer-'+id).classList.add('visible');
+  if(ev&&ev.currentTarget)ev.currentTarget.classList.add('active');
+  if(id==='yield'){updateYieldDropdown();renderYieldHistory();}
+  if(id==='prep'){renderPrep();}
+  if(id==='schedule'){loadLiveSchedule();renderTimeOffHistory();}
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+
+
+</body>
+</html>
